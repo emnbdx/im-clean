@@ -1,45 +1,39 @@
 <?php
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/ai') {
     header('Content-Type: application/json');
-    
-    $apiKey = getenv('OPENAI_API_KEY');
+
+    $apiKey = $_SERVER['HTTP_X_API_KEY'] ?? null;
     if (!$apiKey) {
         http_response_code(503);
-        echo json_encode(['error' => 'OPENAI_API_KEY not set']);
+        echo json_encode(['error' => 'OPENAI_API_KEY not set. Please configure your API key.']);
         exit;
     }
-    
+
     $input = json_decode(file_get_contents('php://input'), true);
     if (!$input || !isset($input['context_json'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Invalid request']);
         exit;
     }
-    
+
     $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true);
-    
+
     $systemPrompt = $config['openai']['system_prompt'];
     $userPrompt = str_replace(
-        ['{effective_days}', '{top_indicators}', '{bottom_indicators}', '{last_relapse}'],
-        [
-            $input['context_json']['effective_days'],
-            $input['context_json']['top_indicators'],
-            $input['context_json']['bottom_indicators'],
-            $input['context_json']['last_relapse']
-        ],
+        '{{context_json}}',
+        json_encode($input['context_json'], JSON_UNESCAPED_UNICODE),
         $config['openai']['user_prompt_template']
     );
-    
+
     $data = [
         'model' => $config['openai']['model'],
         'messages' => [
-            ['role' => 'system', 'content' => $systemPrompt],
+            ['role' => 'developer', 'content' => $systemPrompt],
             ['role' => 'user', 'content' => $userPrompt]
-        ],
-        'max_tokens' => 500,
-        'temperature' => 0.7
+        ]
     ];
-    
+
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'https://api.openai.com/v1/chat/completions');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -49,17 +43,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === '/ai') 
         'Content-Type: application/json',
         'Authorization: Bearer ' . $apiKey
     ]);
-    
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
     curl_close($ch);
-    
-    if ($httpCode !== 200) {
+
+    if ($curlError) {
         http_response_code(500);
-        echo json_encode(['error' => 'OpenAI API error']);
+        echo json_encode(['error' => 'CURL Error: ' . $curlError]);
         exit;
     }
-    
+
+    if ($httpCode !== 200) {
+        http_response_code(500);
+        echo json_encode(['error' => 'OpenAI API error (HTTP ' . $httpCode . '): ' . $response]);
+        exit;
+    }
+
     $result = json_decode($response, true);
     echo json_encode(['message' => $result['choices'][0]['message']['content']]);
     exit;
@@ -69,10 +70,11 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suivi Sobriété</title>
+    <title>Stop Alcool</title>
     <style>
         :root {
             --bg-primary: #ffffff;
@@ -84,11 +86,11 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             --warning: #ffc107;
             --danger: #dc3545;
             --border: #dee2e6;
-            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             --radius: 8px;
             --spacing: 1rem;
         }
-        
+
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-primary: #1a1a1a;
@@ -98,26 +100,26 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
                 --border: #495057;
             }
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: var(--spacing);
         }
-        
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -130,13 +132,13 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             border-radius: var(--radius);
             box-shadow: var(--shadow);
         }
-        
+
         .title {
             font-size: 1.5rem;
             font-weight: bold;
             color: var(--accent);
         }
-        
+
         .btn {
             padding: 0.5rem 1rem;
             border: none;
@@ -147,19 +149,19 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             font-size: 0.9rem;
             transition: background-color 0.2s;
         }
-        
+
         .btn:hover {
             background: #0056b3;
         }
-        
+
         .btn-secondary {
             background: var(--text-secondary);
         }
-        
+
         .btn-danger {
             background: var(--danger);
         }
-        
+
         .section {
             margin-bottom: 2rem;
             padding: var(--spacing);
@@ -167,24 +169,24 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             border-radius: var(--radius);
             box-shadow: var(--shadow);
         }
-        
+
         .section-title {
             font-size: 1.2rem;
             font-weight: bold;
             margin-bottom: var(--spacing);
             color: var(--accent);
         }
-        
+
         .form-group {
             margin-bottom: var(--spacing);
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
-        
+
         .form-control {
             width: 100%;
             padding: 0.5rem;
@@ -193,7 +195,7 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             background: var(--bg-primary);
             color: var(--text-primary);
         }
-        
+
         .counter {
             font-size: 2rem;
             font-weight: bold;
@@ -201,13 +203,13 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             text-align: center;
             margin: var(--spacing) 0;
         }
-        
+
         .indicators-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: var(--spacing);
         }
-        
+
         .indicator-card {
             background: var(--bg-primary);
             border: 1px solid var(--border);
@@ -215,49 +217,60 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             padding: var(--spacing);
             transition: transform 0.2s;
         }
-        
+
         .indicator-card:hover {
             transform: translateY(-2px);
         }
-        
+
         .indicator-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.5rem;
         }
-        
+
         .indicator-name {
             font-weight: bold;
             font-size: 1rem;
         }
-        
+
         .confidence-badge {
             padding: 0.25rem 0.5rem;
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: bold;
         }
-        
-        .confidence-elevée { background: var(--success); color: white; }
-        .confidence-modérée { background: var(--warning); color: var(--text-primary); }
-        .confidence-limitée { background: var(--danger); color: white; }
-        
+
+        .evidence-élevée {
+            background: var(--success);
+            color: white;
+        }
+
+        .evidence-modérée {
+            background: var(--warning);
+            color: var(--text-primary);
+        }
+
+        .evidence-limitée {
+            background: var(--danger);
+            color: white;
+        }
+
         .indicator-category {
             color: var(--text-secondary);
             font-size: 0.85rem;
             margin-bottom: 0.5rem;
         }
-        
+
         .indicator-description {
             font-size: 0.9rem;
             margin-bottom: var(--spacing);
         }
-        
+
         .progress-container {
             margin-bottom: 0.5rem;
         }
-        
+
         .progress-bar {
             width: 100%;
             height: 8px;
@@ -265,25 +278,25 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             border-radius: 4px;
             overflow: hidden;
         }
-        
+
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--accent), var(--success));
             transition: width 0.3s ease;
         }
-        
+
         .progress-text {
             display: flex;
             justify-content: space-between;
             font-size: 0.85rem;
             margin-top: 0.25rem;
         }
-        
+
         .eta {
             color: var(--text-secondary);
             font-style: italic;
         }
-        
+
         .modal {
             display: none;
             position: fixed;
@@ -291,10 +304,10 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
         }
-        
+
         .modal-content {
             position: absolute;
             top: 50%;
@@ -303,18 +316,18 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             background: var(--bg-primary);
             padding: 2rem;
             border-radius: var(--radius);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             max-width: 500px;
             width: 90%;
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: var(--spacing);
         }
-        
+
         .close {
             background: none;
             border: none;
@@ -322,7 +335,7 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             cursor: pointer;
             color: var(--text-secondary);
         }
-        
+
         .toast {
             position: fixed;
             top: 20px;
@@ -335,7 +348,7 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             z-index: 1001;
             display: none;
         }
-        
+
         .ai-response {
             background: var(--bg-primary);
             border: 1px solid var(--border);
@@ -345,23 +358,23 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             white-space: pre-wrap;
             line-height: 1.6;
         }
-        
+
         .loading {
             text-align: center;
             padding: var(--spacing);
             color: var(--text-secondary);
         }
-        
+
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .indicators-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .modal-content {
                 width: 95%;
                 padding: 1rem;
@@ -369,11 +382,13 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h1 class="title">Suivi Sobriété</h1>
+            <h1 class="title">Stop Alcool</h1>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="openConfigModal()" aria-label="Configuration">⚙️ Config</button>
                 <button class="btn btn-secondary" onclick="resetData()" aria-label="Réinitialiser les données">Réinitialiser</button>
                 <button class="btn btn-secondary" onclick="exportData()" aria-label="Exporter les données">Exporter JSON</button>
                 <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()" aria-label="Importer des données">Importer JSON</button>
@@ -383,43 +398,60 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
 
         <div class="section">
             <h2 class="section-title">Mon arrêt</h2>
-            <div class="form-group">
-                <label for="startDate">Date de départ :</label>
-                <input type="date" id="startDate" class="form-control" onchange="saveData()">
-            </div>
             <div class="counter" id="daysCounter">0 jours sans alcool</div>
             <button class="btn btn-danger" onclick="openRelapseModal()" aria-label="Enregistrer une reprise">J'ai bu</button>
         </div>
 
         <div class="section">
-            <h2 class="section-title">Progression santé</h2>
-            <div class="indicators-grid" id="indicatorsGrid"></div>
+            <h2 class="section-title">💬 Encouragement IA</h2>
+            <button class="btn" onclick="getAIEncouragement()" aria-label="Obtenir un message d'encouragement de l'IA">Besoin d'un boost ?</button>
+            <div id="aiResponse" class="ai-response" style="display: none;"></div>
         </div>
 
         <div class="section">
-            <h2 class="section-title">Encouragement IA</h2>
-            <button class="btn" onclick="getAIEncouragement()" aria-label="Obtenir un message d'encouragement de l'IA">Besoin d'un boost ?</button>
-            <div id="aiResponse" class="ai-response" style="display: none;"></div>
+            <h2 class="section-title">📊 Progression santé</h2>
+            <div class="indicators-grid" id="indicatorsGrid"></div>
+        </div>
+    </div>
+
+    <div id="configModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Configuration</h3>
+                <button class="close" onclick="closeConfigModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="configApiKey">Clé API OpenAI :</label>
+                <input type="password" id="configApiKey" class="form-control" placeholder="sk-...">
+                <small style="color: var(--text-secondary); font-size: 0.8rem;">Votre clé API sera stockée localement</small>
+            </div>
+            <div class="form-group">
+                <label for="configStartDate">Date de début d'arrêt :</label>
+                <input type="date" id="configStartDate" class="form-control">
+            </div>
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeConfigModal()">Annuler</button>
+                <button class="btn" onclick="saveConfig()">Sauvegarder</button>
+            </div>
         </div>
     </div>
 
     <div id="relapseModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Enregistrer une reprise</h3>
+                <h3>Reprise d'alcool</h3>
                 <button class="close" onclick="closeRelapseModal()">&times;</button>
             </div>
-            <div class="form-group">
-                <label for="relapseDate">Date et heure :</label>
-                <input type="datetime-local" id="relapseDate" class="form-control">
+            <div style="text-align: center; padding: 1rem;">
+                <p>Êtes-vous sûr de vouloir enregistrer une reprise ?</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Cela remettra votre compteur à 0.</p>
+                <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.5rem;">
+                    Date : <span id="relapseDateDisplay"></span>
+                </p>
             </div>
-            <div class="form-group">
-                <label for="relapseUnits">Nombre de verres standards :</label>
-                <input type="number" id="relapseUnits" class="form-control" min="1" value="1">
-            </div>
-            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+            <div style="display: flex; gap: 0.5rem; justify-content: center;">
                 <button class="btn btn-secondary" onclick="closeRelapseModal()">Annuler</button>
-                <button class="btn btn-danger" onclick="saveRelapse()">Enregistrer</button>
+                <button class="btn btn-danger" onclick="saveRelapse()">Confirmer</button>
             </div>
         </div>
     </div>
@@ -437,51 +469,62 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             success: 'Succès'
         };
 
-        let config = <?= json_encode($config) ?>;
-        let state = {
-            startDate: '',
-            relapses: [],
-            notes: ''
+        let appConfig = <?= json_encode($config) ?>;
+
+        let userConfig = {
+            apiKey: '',
+            startDate: ''
         };
 
-        let saveTimeout;
 
         function loadState() {
-            const saved = localStorage.getItem('sobriety.state.v1');
-            if (saved) {
+            const savedConfig = localStorage.getItem('sobriety.config.v1');
+            if (savedConfig) {
                 try {
-                    state = JSON.parse(saved);
-                    if (state.startDate) {
-                        document.getElementById('startDate').value = state.startDate;
-                    }
+                    userConfig = JSON.parse(savedConfig);
                 } catch (e) {
-                    console.error('Erreur lors du chargement des données:', e);
+                    console.error('Erreur lors du chargement de la configuration:', e);
                 }
             }
+
+            // Mettre à jour la date d'affichage de la modal de rechute
+            updateRelapseDateDisplay();
+
             updateUI();
         }
 
-        function saveData() {
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                state.startDate = document.getElementById('startDate').value;
-                localStorage.setItem('sobriety.state.v1', JSON.stringify(state));
-                updateUI();
-            }, 300);
+        function updateRelapseDateDisplay() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('fr-FR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const dateElement = document.getElementById('relapseDateDisplay');
+            if (dateElement) {
+                dateElement.textContent = dateStr;
+            }
         }
+
 
         function resetData() {
             if (confirm('Êtes-vous sûr de vouloir réinitialiser toutes les données ?')) {
-                state = { startDate: '', relapses: [], notes: '' };
-                document.getElementById('startDate').value = '';
-                localStorage.removeItem('sobriety.state.v1');
+                userConfig = {
+                    apiKey: '',
+                    startDate: ''
+                };
+                localStorage.removeItem('sobriety.config.v1');
                 updateUI();
             }
         }
 
         function exportData() {
-            const dataStr = JSON.stringify(state, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const dataStr = JSON.stringify(userConfig, null, 2);
+            const dataBlob = new Blob([dataStr], {
+                type: 'application/json'
+            });
             const url = URL.createObjectURL(dataBlob);
             const link = document.createElement('a');
             link.href = url;
@@ -498,12 +541,13 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             reader.onload = function(e) {
                 try {
                     const imported = JSON.parse(e.target.result);
-                    if (imported.startDate || imported.relapses || imported.notes) {
-                        state = { ...state, ...imported };
-                        if (state.startDate) {
-                            document.getElementById('startDate').value = state.startDate;
-                        }
-                        localStorage.setItem('sobriety.state.v1', JSON.stringify(state));
+                    if (imported.startDate || imported.notes) {
+                        userConfig = {
+                            ...userConfig,
+                            ...imported
+                        };
+                        // Date de début gérée via la configuration
+                        localStorage.setItem('sobriety.config.v1', JSON.stringify(userConfig));
                         updateUI();
                         showToast('Données importées avec succès', 'success');
                     } else {
@@ -518,82 +562,79 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
         }
 
         function calculateEffectiveDays() {
-            if (!state.startDate) return 0;
-            
-            const startDate = new Date(state.startDate);
+            if (!userConfig.startDate) return 0;
+
+            const startDate = new Date(userConfig.startDate);
             const now = new Date();
             const totalDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
-            
-            let penaltyDays = 0;
-            const cooldownHours = config.relapse_model.cooldown_hours_after_relapse;
-            
-            for (const relapse of state.relapses) {
-                const relapseDate = new Date(relapse.date);
-                const hoursSinceRelapse = (now - relapseDate) / (1000 * 60 * 60);
-                
-                if (hoursSinceRelapse >= cooldownHours) {
-                    const units = Math.min(relapse.units, 10);
-                    penaltyDays += Math.min(units * config.relapse_model.penalty_days_per_unit, config.relapse_model.max_penalty_days);
-                }
-            }
-            
-            return Math.max(0, totalDays - penaltyDays);
+
+            return totalDays;
         }
 
         function calculateIndicatorProgress(indicator, effectiveDays) {
             if (!indicator.target_days) {
-                return { progress: 0, eta: null, isComplete: false };
+                return {
+                    progress: 0,
+                    eta: null,
+                    isComplete: false
+                };
             }
-            
-            const cooldownHours = config.relapse_model.cooldown_hours_after_relapse;
-            const now = new Date();
-            let completionDecay = 0;
-            
-            for (const relapse of state.relapses) {
-                const relapseDate = new Date(relapse.date);
-                const hoursSinceRelapse = (now - relapseDate) / (1000 * 60 * 60);
-                
-                if (hoursSinceRelapse < cooldownHours) {
-                    return { progress: 0, eta: null, isComplete: false };
-                }
-                
-                const units = Math.min(relapse.units, 10);
-                const decay = Math.min(units * config.relapse_model.completion_decay_per_unit, config.relapse_model.max_completion_decay);
-                completionDecay = Math.max(completionDecay, decay);
+
+            // Si pas de jours effectifs (rechute), retourner 0
+            if (effectiveDays <= 0) {
+                return {
+                    progress: 0,
+                    eta: null,
+                    isComplete: false
+                };
             }
-            
+
             const rawProgress = Math.min(1, effectiveDays / indicator.target_days);
-            const smoothedProgress = Math.min(1, rawProgress * (1 - completionDecay));
-            const isComplete = smoothedProgress >= 1;
-            const eta = isComplete ? null : Math.ceil((indicator.target_days - effectiveDays) / (1 - completionDecay));
-            
-            return { progress: smoothedProgress, eta, isComplete };
+            const isComplete = rawProgress >= 1;
+
+            // Calculer l'ETA simplement
+            let eta = null;
+            if (!isComplete) {
+                const remainingDays = indicator.target_days - effectiveDays;
+                if (remainingDays > 0) {
+                    eta = Math.ceil(remainingDays);
+                }
+            }
+
+            return {
+                progress: rawProgress,
+                eta,
+                isComplete
+            };
         }
 
         function updateUI() {
             const effectiveDays = calculateEffectiveDays();
             document.getElementById('daysCounter').textContent = `${effectiveDays} ${i18n.days} ${i18n.withoutAlcohol}`;
-            
+
             const indicatorsGrid = document.getElementById('indicatorsGrid');
             indicatorsGrid.innerHTML = '';
-            
-            const indicatorsWithProgress = config.indicators.map(indicator => {
+
+            const indicatorsWithProgress = appConfig.indicators.map(indicator => {
                 const progressData = calculateIndicatorProgress(indicator, effectiveDays);
-                return { ...indicator, ...progressData };
+                return {
+                    ...indicator,
+                    ...progressData
+                };
             });
-            
+
             indicatorsWithProgress.sort((a, b) => b.progress - a.progress);
-            
+
             indicatorsWithProgress.forEach(indicator => {
                 const card = document.createElement('div');
                 card.className = 'indicator-card';
-                
-                const confidenceClass = `confidence-${indicator.confidence.toLowerCase()}`;
-                
+
+                const evidenceClass = `evidence-${indicator.evidence_level.toLowerCase()}`;
+
                 card.innerHTML = `
                     <div class="indicator-header">
-                        <div class="indicator-name">${indicator.name}</div>
-                        <div class="confidence-badge ${confidenceClass}">${indicator.confidence}</div>
+                        <div class="indicator-name">${indicator.label}</div>
+                        <div class="confidence-badge ${evidenceClass}">${indicator.evidence_level}</div>
                     </div>
                     <div class="indicator-category">${indicator.category}</div>
                     <div class="indicator-description">${indicator.description}</div>
@@ -609,13 +650,34 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
                         </div>
                     ` : `<div class="progress-text">${i18n.longTerm}</div>`}
                 `;
-                
+
                 indicatorsGrid.appendChild(card);
             });
         }
 
+        function openConfigModal() {
+            document.getElementById('configApiKey').value = userConfig.apiKey;
+            document.getElementById('configStartDate').value = userConfig.startDate;
+            document.getElementById('configModal').style.display = 'block';
+        }
+
+        function closeConfigModal() {
+            document.getElementById('configModal').style.display = 'none';
+        }
+
+        function saveConfig() {
+            userConfig.apiKey = document.getElementById('configApiKey').value;
+            userConfig.startDate = document.getElementById('configStartDate').value;
+
+            localStorage.setItem('sobriety.config.v1', JSON.stringify(userConfig));
+
+            closeConfigModal();
+            updateUI();
+            showToast('Configuration sauvegardée', 'success');
+        }
+
         function openRelapseModal() {
-            document.getElementById('relapseDate').value = new Date().toISOString().slice(0, 16);
+            updateRelapseDateDisplay();
             document.getElementById('relapseModal').style.display = 'block';
         }
 
@@ -624,81 +686,82 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
         }
 
         function saveRelapse() {
-            const date = document.getElementById('relapseDate').value;
-            const units = parseInt(document.getElementById('relapseUnits').value);
-            
-            if (!date || units < 1) {
-                showToast('Veuillez remplir tous les champs', 'error');
-                return;
-            }
-            
-            state.relapses.push({
-                date: new Date(date).toISOString(),
-                units: units
-            });
-            
-            state.relapses.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            localStorage.setItem('sobriety.state.v1', JSON.stringify(state));
+            // Remettre la startDate à la date actuelle (reset du compteur)
+            userConfig.startDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+            localStorage.setItem('sobriety.config.v1', JSON.stringify(userConfig));
             closeRelapseModal();
             updateUI();
+            showToast('Compteur remis à zéro', 'success');
         }
 
         function getAIEncouragement() {
+            if (!userConfig.apiKey) {
+                showToast('Veuillez configurer votre clé API OpenAI', 'error');
+                openConfigModal();
+                return;
+            }
+
             const effectiveDays = calculateEffectiveDays();
-            const indicatorsWithProgress = config.indicators.map(indicator => {
+            const indicatorsWithProgress = appConfig.indicators.map(indicator => {
                 const progressData = calculateIndicatorProgress(indicator, effectiveDays);
-                return { ...indicator, ...progressData };
+                return {
+                    ...indicator,
+                    ...progressData
+                };
             });
-            
+
             indicatorsWithProgress.sort((a, b) => b.progress - a.progress);
-            
-            const topIndicators = indicatorsWithProgress.slice(0, 3).map(ind => 
-                `${ind.name}: ${Math.round(ind.progress * 100)}%`
+
+            const topIndicators = indicatorsWithProgress.slice(0, 3).map(ind =>
+                `${ind.label}: ${Math.round(ind.progress * 100)}%`
             ).join(', ');
-            
-            const bottomIndicators = indicatorsWithProgress.slice(-3).map(ind => 
-                `${ind.name}: ${Math.round(ind.progress * 100)}%`
+
+            const bottomIndicators = indicatorsWithProgress.slice(-3).map(ind =>
+                `${ind.label}: ${Math.round(ind.progress * 100)}%`
             ).join(', ');
-            
-            const lastRelapse = state.relapses.length > 0 ? 
-                `${new Date(state.relapses[0].date).toLocaleDateString()}: ${state.relapses[0].units} verres` : 
-                'Aucune';
-            
+
+            const lastRelapse = 'Aucune';
+
             const contextJson = {
                 effective_days: effectiveDays,
                 top_indicators: topIndicators,
                 bottom_indicators: bottomIndicators,
                 last_relapse: lastRelapse
             };
-            
+
             const aiResponse = document.getElementById('aiResponse');
             aiResponse.style.display = 'block';
             aiResponse.innerHTML = '<div class="loading">' + i18n.loading + '</div>';
-            
+
             fetch('/ai', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ context_json: contextJson })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    if (response.status === 503) {
-                        throw new Error('OPENAI_API_KEY not set');
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': userConfig.apiKey
+                    },
+                    body: JSON.stringify({
+                        context_json: contextJson
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        if (response.status === 503) {
+                            throw new Error('OPENAI_API_KEY not set');
+                        }
+                        throw new Error('Erreur serveur');
                     }
-                    throw new Error('Erreur serveur');
-                }
-                return response.json();
-            })
-            .then(data => {
-                aiResponse.innerHTML = data.message;
-            })
-            .catch(error => {
-                aiResponse.innerHTML = 'Erreur: ' + error.message;
-                if (error.message.includes('OPENAI_API_KEY')) {
-                    showToast('Clé API OpenAI manquante', 'error');
-                }
-            });
+                    return response.json();
+                })
+                .then(data => {
+                    aiResponse.innerHTML = data.message;
+                })
+                .catch(error => {
+                    aiResponse.innerHTML = 'Erreur: ' + error.message;
+                    if (error.message.includes('OPENAI_API_KEY')) {
+                        showToast('Clé API OpenAI manquante', 'error');
+                    }
+                });
         }
 
         function showToast(message, type = 'error') {
@@ -706,44 +769,23 @@ $config = json_decode(file_get_contents(__DIR__ . '/config.sobriete.json'), true
             toast.textContent = message;
             toast.style.display = 'block';
             toast.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
-            
+
             setTimeout(() => {
                 toast.style.display = 'none';
             }, 3000);
         }
 
-        function runTests() {
-            console.log('=== Tests d\'acceptation ===');
-            
-            const originalState = { ...state };
-            
-            state.startDate = '2025-01-01';
-            state.relapses = [];
-            const effectiveDays = calculateEffectiveDays();
-            console.log('Test 1 - Sans reprise:', effectiveDays > 0 ? 'PASS' : 'FAIL');
-            
-            state.relapses = [{ date: new Date().toISOString(), units: 3 }];
-            const progressData = calculateIndicatorProgress(config.indicators[0], effectiveDays);
-            console.log('Test 2 - Après reprise:', progressData.progress < 1 ? 'PASS' : 'FAIL');
-            
-            const exportData = JSON.stringify(state);
-            const importedState = JSON.parse(exportData);
-            console.log('Test 3 - Export/Import:', JSON.stringify(importedState) === exportData ? 'PASS' : 'FAIL');
-            
-            state = originalState;
-            updateUI();
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             loadState();
-            runTests();
         });
 
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('modal')) {
                 closeRelapseModal();
+                closeConfigModal();
             }
         });
     </script>
 </body>
+
 </html>

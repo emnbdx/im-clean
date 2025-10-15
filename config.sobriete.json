@@ -1,232 +1,386 @@
 {
-  "openai": {
-    "model": "gpt-3.5-turbo",
-    "system_prompt": "Tu es un coach bienveillant spécialisé dans l'accompagnement à l'arrêt de l'alcool. Tu encourages avec empathie, sans jugement, en te basant sur les données de progression fournies. Réponds en français, de manière concise et motivante.",
-    "user_prompt_template": "Voici mes données de sobriété :\n- Jours d'abstinence effectifs : {effective_days}\n- Indicateurs les plus avancés : {top_indicators}\n- Indicateurs moins avancés : {bottom_indicators}\n- Dernier événement de reprise : {last_relapse}\n\nJ'ai besoin d'encouragement et de conseils pour continuer ma démarche."
-  },
   "relapse_model": {
-    "cooldown_hours_after_relapse": 24,
-    "completion_decay_per_unit": 0.05,
-    "max_completion_decay": 0.3,
+    "cooldown_hours_after_relapse": 72,
+    "completion_decay_per_unit": 0.15,
+    "max_completion_decay": 0.8,
     "penalty_days_per_unit": 2,
     "max_penalty_days": 14
   },
   "indicators": [
     {
-      "id": "sleep_quality",
-      "name": "Qualité du sommeil",
-      "category": "Physique",
-      "description": "Amélioration de la qualité et de la durée du sommeil",
-      "target_days": 7,
-      "smoothing_window_days": 3,
-      "confidence": "Élevée"
+      "id": "ggt",
+      "label": "GGT (gamma‑GT)",
+      "category": "Sang / Foie",
+      "description": "Enzyme hépatique souvent élevée avec l'alcool. Elle baisse nettement après l'arrêt, signe que le foie respire mieux.",
+      "target_days": 28,
+      "range_days": [
+        14,
+        42
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "AandA2018_GGT"
+      ]
     },
     {
-      "id": "energy_level",
-      "name": "Niveau d'énergie",
-      "category": "Physique",
-      "description": "Augmentation de l'énergie et de la vitalité",
-      "target_days": 14,
-      "smoothing_window_days": 5,
-      "confidence": "Élevée"
-    },
-    {
-      "id": "skin_health",
-      "name": "Santé de la peau",
-      "category": "Physique",
-      "description": "Amélioration de l'apparence et de la texture de la peau",
+      "id": "alt_ast",
+      "label": "ALT/AST",
+      "category": "Sang / Foie",
+      "description": "Marqueurs d'inflammation hépatique. Tendent à revenir vers la normale en quelques semaines si pas d'hépatite sévère.",
       "target_days": 21,
-      "smoothing_window_days": 7,
-      "confidence": "Modérée"
+      "range_days": [
+        14,
+        56
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "BMJOpen2018"
+      ]
     },
     {
-      "id": "weight_stabilization",
-      "name": "Stabilisation du poids",
-      "category": "Physique",
-      "description": "Normalisation du poids corporel",
-      "target_days": 30,
-      "smoothing_window_days": 10,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "liver_function",
-      "name": "Fonction hépatique",
-      "category": "Physique",
-      "description": "Régénération et amélioration de la fonction hépatique",
-      "target_days": 60,
-      "smoothing_window_days": 14,
-      "confidence": "Élevée"
-    },
-    {
-      "id": "cardiovascular_health",
-      "name": "Santé cardiovasculaire",
-      "category": "Physique",
-      "description": "Amélioration de la pression artérielle et de la santé cardiaque",
-      "target_days": 45,
-      "smoothing_window_days": 14,
-      "confidence": "Élevée"
-    },
-    {
-      "id": "immune_system",
-      "name": "Système immunitaire",
-      "category": "Physique",
-      "description": "Renforcement des défenses immunitaires",
-      "target_days": 30,
-      "smoothing_window_days": 7,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "digestive_health",
-      "name": "Santé digestive",
-      "category": "Physique",
-      "description": "Amélioration de la digestion et de l'absorption des nutriments",
-      "target_days": 14,
-      "smoothing_window_days": 5,
-      "confidence": "Élevée"
-    },
-    {
-      "id": "mood_stability",
-      "name": "Stabilité de l'humeur",
-      "category": "Mental",
-      "description": "Réduction des sautes d'humeur et stabilisation émotionnelle",
-      "target_days": 21,
-      "smoothing_window_days": 7,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "anxiety_reduction",
-      "name": "Réduction de l'anxiété",
-      "category": "Mental",
-      "description": "Diminution des niveaux d'anxiété et de stress",
-      "target_days": 14,
-      "smoothing_window_days": 5,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "depression_symptoms",
-      "name": "Symptômes dépressifs",
-      "category": "Mental",
-      "description": "Amélioration des symptômes dépressifs",
-      "target_days": 30,
-      "smoothing_window_days": 10,
-      "confidence": "Limitée"
-    },
-    {
-      "id": "cognitive_function",
-      "name": "Fonction cognitive",
-      "category": "Mental",
-      "description": "Amélioration de la concentration et de la mémoire",
-      "target_days": 21,
-      "smoothing_window_days": 7,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "self_esteem",
-      "name": "Estime de soi",
-      "category": "Mental",
-      "description": "Renforcement de la confiance et de l'estime de soi",
-      "target_days": 45,
-      "smoothing_window_days": 14,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "emotional_regulation",
-      "name": "Régulation émotionnelle",
-      "category": "Mental",
-      "description": "Meilleure gestion des émotions et des impulsions",
-      "target_days": 30,
-      "smoothing_window_days": 10,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "stress_management",
-      "name": "Gestion du stress",
-      "category": "Mental",
-      "description": "Développement de stratégies de gestion du stress",
-      "target_days": 21,
-      "smoothing_window_days": 7,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "relationships",
-      "name": "Relations interpersonnelles",
-      "category": "Social",
-      "description": "Amélioration des relations avec la famille et les amis",
-      "target_days": 60,
-      "smoothing_window_days": 21,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "social_confidence",
-      "name": "Confiance sociale",
-      "category": "Social",
-      "description": "Augmentation de la confiance dans les interactions sociales",
-      "target_days": 30,
-      "smoothing_window_days": 10,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "work_performance",
-      "name": "Performance au travail",
-      "category": "Social",
-      "description": "Amélioration de la productivité et de la concentration au travail",
-      "target_days": 21,
-      "smoothing_window_days": 7,
-      "confidence": "Modérée"
-    },
-    {
-      "id": "financial_stability",
-      "name": "Stabilité financière",
-      "category": "Social",
-      "description": "Amélioration de la situation financière",
+      "id": "mcv",
+      "label": "Volume globulaire moyen (MCV)",
+      "category": "Sang",
+      "description": "Macrocytose liée à l'alcool ; revient graduellement à la normale une fois l'abstinence maintenue.",
       "target_days": 90,
-      "smoothing_window_days": 30,
-      "confidence": "Élevée"
+      "range_days": [
+        60,
+        120
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "MCV_Review2022"
+      ]
     },
     {
-      "id": "hobby_engagement",
-      "name": "Engagement dans les loisirs",
-      "category": "Social",
-      "description": "Retour aux activités et hobbies abandonnés",
-      "target_days": 45,
-      "smoothing_window_days": 14,
-      "confidence": "Modérée"
+      "id": "platelets",
+      "label": "Plaquettes",
+      "category": "Sang",
+      "description": "La thrombopénie alcool‑induite remonte rapidement après l'arrêt, avec parfois un rebond transitoire.",
+      "target_days": 14,
+      "range_days": [
+        7,
+        28
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "Platelets_JCP"
+      ]
     },
     {
-      "id": "spiritual_wellbeing",
-      "name": "Bien-être spirituel",
-      "category": "Spirituel",
-      "description": "Connexion avec ses valeurs et son sens de la vie",
-      "target_days": null,
-      "smoothing_window_days": 0,
-      "confidence": "Limitée"
+      "id": "fatty_liver",
+      "label": "Stéatose hépatique",
+      "category": "Foie",
+      "description": "Graisse dans le foie ; régresse vite à l'arrêt si pas d'atteinte avancée.",
+      "target_days": 42,
+      "range_days": [
+        14,
+        56
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "LiverSteatosis_UpToDate"
+      ]
     },
     {
-      "id": "purpose_clarity",
-      "name": "Clarté du sens de la vie",
-      "category": "Spirituel",
-      "description": "Développement d'une vision claire de ses objectifs de vie",
-      "target_days": null,
-      "smoothing_window_days": 0,
-      "confidence": "Limitée"
+      "id": "liver_fibrosis",
+      "label": "Fibrose hépatique (raideur)",
+      "category": "Foie",
+      "description": "Cicatrisation du foie. Amélioration lente et partielle ; si cirrhose, retour complet improbable.",
+      "target_days": 730,
+      "range_days": [
+        365,
+        1460
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "LiverSteatosis_UpToDate"
+      ]
     },
     {
-      "id": "gratitude_practice",
-      "name": "Pratique de la gratitude",
-      "category": "Spirituel",
-      "description": "Développement d'une attitude de gratitude quotidienne",
+      "id": "bp",
+      "label": "Tension artérielle",
+      "category": "Cœur & vaisseaux",
+      "description": "La réduction/arrêt de l'alcool abaisse la TA, surtout chez les gros buveurs.",
       "target_days": 30,
-      "smoothing_window_days": 10,
-      "confidence": "Modérée"
+      "range_days": [
+        21,
+        56
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "LancetBP2017",
+        "BMJOpen2018"
+      ]
     },
     {
-      "id": "mindfulness",
-      "name": "Pleine conscience",
-      "category": "Spirituel",
-      "description": "Développement de la capacité à être présent et conscient",
-      "target_days": 45,
-      "smoothing_window_days": 14,
-      "confidence": "Modérée"
+      "id": "rhr",
+      "label": "Fréquence cardiaque au repos",
+      "category": "Cœur & vaisseaux",
+      "description": "La FC au repos tend à diminuer avec l'abstinence et un meilleur sommeil.",
+      "target_days": 21,
+      "range_days": [
+        14,
+        60
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "LancetBP2017"
+      ]
+    },
+    {
+      "id": "hrv",
+      "label": "Variabilité de la fréquence cardiaque (HRV)",
+      "category": "Cœur & vaisseaux",
+      "description": "Marqueur de régulation autonome ; s'améliore progressivement avec l'abstinence.",
+      "target_days": 60,
+      "range_days": [
+        30,
+        120
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "HRV_Recovery"
+      ]
+    },
+    {
+      "id": "insulin_resistance",
+      "label": "Résistance à l'insuline (HOMA‑IR)",
+      "category": "Métabolisme",
+      "description": "Sensibilité à l'insuline qui se rétablit rapidement, aidant glycémie et énergie.",
+      "target_days": 30,
+      "range_days": [
+        21,
+        56
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "BMJOpen2018"
+      ]
+    },
+    {
+      "id": "fasting_glucose",
+      "label": "Glycémie à jeun",
+      "category": "Métabolisme",
+      "description": "Baisse attendue avec l'arrêt, surtout si consommation élevée et grignotage sucré associés.",
+      "target_days": 14,
+      "range_days": [
+        7,
+        42
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "BMJOpen2018"
+      ]
+    },
+    {
+      "id": "hba1c",
+      "label": "HbA1c",
+      "category": "Métabolisme",
+      "description": "Moyenne glycémique sur ~3 mois ; reflète l'amélioration durable.",
+      "target_days": 90,
+      "range_days": [
+        60,
+        120
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "BMJOpen2018"
+      ]
+    },
+    {
+      "id": "triglycerides",
+      "label": "Triglycérides",
+      "category": "Métabolisme",
+      "description": "Les TG baissent généralement en quelques semaines d'abstinence.",
+      "target_days": 30,
+      "range_days": [
+        21,
+        60
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "BMJOpen2018"
+      ]
+    },
+    {
+      "id": "weight",
+      "label": "Poids (palier initial)",
+      "category": "Métabolisme",
+      "description": "Premier palier typique (eau + calories liquides) sur un mois, puis phase plus lente.",
+      "target_days": 30,
+      "range_days": [
+        21,
+        60
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "BMJOpen2018"
+      ]
+    },
+    {
+      "id": "sleep_quality",
+      "label": "Sommeil (qualité/REM)",
+      "category": "Sommeil & cerveau",
+      "description": "Le sommeil se normalise lentement ; REM rebond puis stabilisation.",
+      "target_days": 56,
+      "range_days": [
+        42,
+        84
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "Sleep_6to8w"
+      ]
+    },
+    {
+      "id": "attention_speed",
+      "label": "Attention & vitesse de traitement",
+      "category": "Sommeil & cerveau",
+      "description": "Amélioration rapide corrélée au repos et à la baisse d'inflammation.",
+      "target_days": 60,
+      "range_days": [
+        42,
+        90
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "Brain_6to7w"
+      ]
+    },
+    {
+      "id": "working_memory",
+      "label": "Mémoire de travail / fonctions exécutives",
+      "category": "Sommeil & cerveau",
+      "description": "Récupération plus lente des circuits frontaux ; progrès sensibles en quelques mois.",
+      "target_days": 180,
+      "range_days": [
+        90,
+        360
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "Brain_6to7w"
+      ]
+    },
+    {
+      "id": "mood_anxiety",
+      "label": "Humeur / anxiété",
+      "category": "Neuro‑psy",
+      "description": "Après une phase parfois instable, la majorité ressent un mieux‑être en 4–8 semaines.",
+      "target_days": 42,
+      "range_days": [
+        28,
+        84
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "BMJOpen2018"
+      ]
+    },
+    {
+      "id": "craving",
+      "label": "Accoutumance / envies (craving)",
+      "category": "Neuro‑psy",
+      "description": "L'intensité des envies diminue nettement avec les semaines et l'hygiène de vie.",
+      "target_days": 90,
+      "range_days": [
+        60,
+        180
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "HRV_Recovery"
+      ]
+    },
+    {
+      "id": "gastritis_reflux",
+      "label": "Gastrite / reflux",
+      "category": "Digestion",
+      "description": "Les symptômes s'apaisent souvent en quelques jours à semaines si arrêt + mesures diététiques.",
+      "target_days": 21,
+      "range_days": [
+        7,
+        84
+      ],
+      "evidence_level": "Limitée",
+      "sources": []
+    },
+    {
+      "id": "skin",
+      "label": "Peau / hydratation / teint",
+      "category": "Divers",
+      "description": "Meilleure hydratation, rougeurs et cernes qui régressent avec le sommeil et la baisse d'inflammation.",
+      "target_days": 21,
+      "range_days": [
+        14,
+        60
+      ],
+      "evidence_level": "Limitée",
+      "sources": []
+    },
+    {
+      "id": "libido_ed",
+      "label": "Libido / fonction érectile",
+      "category": "Sexualité",
+      "description": "Amélioration fréquente en ~3 mois, plus rapide si atteinte modérée au départ.",
+      "target_days": 90,
+      "range_days": [
+        30,
+        180
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "ED_3mo"
+      ]
+    },
+    {
+      "id": "cancer_head_neck",
+      "label": "Risque cancer bouche‑gorge‑larynx",
+      "category": "Cancers (long terme)",
+      "description": "Risque qui décroît lentement avec l'abstinence. Retour vers le niveau des jamais‑buveurs ≈ 20 ans.",
+      "target_days": 7300,
+      "range_days": [
+        5840,
+        9125
+      ],
+      "evidence_level": "Élevée",
+      "sources": [
+        "HeadNeck_20y"
+      ]
+    },
+    {
+      "id": "cancer_esophagus_scc",
+      "label": "Risque cancer de l'œsophage (SCC)",
+      "category": "Cancers (long terme)",
+      "description": "Baisse progressive à long terme avec l'arrêt. Horizon de l'ordre de 15–20 ans.",
+      "target_days": 5840,
+      "range_days": [
+        4380,
+        7300
+      ],
+      "evidence_level": "Modérée",
+      "sources": [
+        "HeadNeck_20y"
+      ]
+    },
+    {
+      "id": "cancer_liver_hcc",
+      "label": "Risque cancer du foie (HCC)",
+      "category": "Cancers (long terme)",
+      "description": "Réduction avec l'abstinence, mais si cirrhose, le risque persiste ; surveillance indispensable.",
+      "target_days": 3650,
+      "range_days": [
+        1825,
+        7300
+      ],
+      "evidence_level": "Modérée",
+      "sources": []
     }
-  ]
+  ],
+  "openai": {
+    "model": "gpt-5-nano",
+    "system_prompt": "Tu es un coach sobriété bref, bienveillant et factuel. Tu génères des messages d'encouragement personnalisés en français, basés sur l'état d'arrêt et les marqueurs en progression. Tu restes concret (1 statistique et 1 micro‑action). Ton tutoiement est respectueux, jamais moralisateur.",
+    "user_prompt_template": "Contexte JSON: {{context_json}}\nÉcris un message de 80–120 mots, en français, qui: (1) souligne 1–3 progrès chiffrés, (2) normalise les envies éventuelles, (3) propose 1 micro‑action pour aujourd'hui (ex: 10 min de marche, eau pétillante, routine de coucher), (4) ajoute un emoji sobre au début et à la fin."
+  }
 }
