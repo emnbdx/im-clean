@@ -1,0 +1,232 @@
+{
+  "openai": {
+    "model": "gpt-3.5-turbo",
+    "system_prompt": "Tu es un coach bienveillant spécialisé dans l'accompagnement à l'arrêt de l'alcool. Tu encourages avec empathie, sans jugement, en te basant sur les données de progression fournies. Réponds en français, de manière concise et motivante.",
+    "user_prompt_template": "Voici mes données de sobriété :\n- Jours d'abstinence effectifs : {effective_days}\n- Indicateurs les plus avancés : {top_indicators}\n- Indicateurs moins avancés : {bottom_indicators}\n- Dernier événement de reprise : {last_relapse}\n\nJ'ai besoin d'encouragement et de conseils pour continuer ma démarche."
+  },
+  "relapse_model": {
+    "cooldown_hours_after_relapse": 24,
+    "completion_decay_per_unit": 0.05,
+    "max_completion_decay": 0.3,
+    "penalty_days_per_unit": 2,
+    "max_penalty_days": 14
+  },
+  "indicators": [
+    {
+      "id": "sleep_quality",
+      "name": "Qualité du sommeil",
+      "category": "Physique",
+      "description": "Amélioration de la qualité et de la durée du sommeil",
+      "target_days": 7,
+      "smoothing_window_days": 3,
+      "confidence": "Élevée"
+    },
+    {
+      "id": "energy_level",
+      "name": "Niveau d'énergie",
+      "category": "Physique",
+      "description": "Augmentation de l'énergie et de la vitalité",
+      "target_days": 14,
+      "smoothing_window_days": 5,
+      "confidence": "Élevée"
+    },
+    {
+      "id": "skin_health",
+      "name": "Santé de la peau",
+      "category": "Physique",
+      "description": "Amélioration de l'apparence et de la texture de la peau",
+      "target_days": 21,
+      "smoothing_window_days": 7,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "weight_stabilization",
+      "name": "Stabilisation du poids",
+      "category": "Physique",
+      "description": "Normalisation du poids corporel",
+      "target_days": 30,
+      "smoothing_window_days": 10,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "liver_function",
+      "name": "Fonction hépatique",
+      "category": "Physique",
+      "description": "Régénération et amélioration de la fonction hépatique",
+      "target_days": 60,
+      "smoothing_window_days": 14,
+      "confidence": "Élevée"
+    },
+    {
+      "id": "cardiovascular_health",
+      "name": "Santé cardiovasculaire",
+      "category": "Physique",
+      "description": "Amélioration de la pression artérielle et de la santé cardiaque",
+      "target_days": 45,
+      "smoothing_window_days": 14,
+      "confidence": "Élevée"
+    },
+    {
+      "id": "immune_system",
+      "name": "Système immunitaire",
+      "category": "Physique",
+      "description": "Renforcement des défenses immunitaires",
+      "target_days": 30,
+      "smoothing_window_days": 7,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "digestive_health",
+      "name": "Santé digestive",
+      "category": "Physique",
+      "description": "Amélioration de la digestion et de l'absorption des nutriments",
+      "target_days": 14,
+      "smoothing_window_days": 5,
+      "confidence": "Élevée"
+    },
+    {
+      "id": "mood_stability",
+      "name": "Stabilité de l'humeur",
+      "category": "Mental",
+      "description": "Réduction des sautes d'humeur et stabilisation émotionnelle",
+      "target_days": 21,
+      "smoothing_window_days": 7,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "anxiety_reduction",
+      "name": "Réduction de l'anxiété",
+      "category": "Mental",
+      "description": "Diminution des niveaux d'anxiété et de stress",
+      "target_days": 14,
+      "smoothing_window_days": 5,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "depression_symptoms",
+      "name": "Symptômes dépressifs",
+      "category": "Mental",
+      "description": "Amélioration des symptômes dépressifs",
+      "target_days": 30,
+      "smoothing_window_days": 10,
+      "confidence": "Limitée"
+    },
+    {
+      "id": "cognitive_function",
+      "name": "Fonction cognitive",
+      "category": "Mental",
+      "description": "Amélioration de la concentration et de la mémoire",
+      "target_days": 21,
+      "smoothing_window_days": 7,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "self_esteem",
+      "name": "Estime de soi",
+      "category": "Mental",
+      "description": "Renforcement de la confiance et de l'estime de soi",
+      "target_days": 45,
+      "smoothing_window_days": 14,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "emotional_regulation",
+      "name": "Régulation émotionnelle",
+      "category": "Mental",
+      "description": "Meilleure gestion des émotions et des impulsions",
+      "target_days": 30,
+      "smoothing_window_days": 10,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "stress_management",
+      "name": "Gestion du stress",
+      "category": "Mental",
+      "description": "Développement de stratégies de gestion du stress",
+      "target_days": 21,
+      "smoothing_window_days": 7,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "relationships",
+      "name": "Relations interpersonnelles",
+      "category": "Social",
+      "description": "Amélioration des relations avec la famille et les amis",
+      "target_days": 60,
+      "smoothing_window_days": 21,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "social_confidence",
+      "name": "Confiance sociale",
+      "category": "Social",
+      "description": "Augmentation de la confiance dans les interactions sociales",
+      "target_days": 30,
+      "smoothing_window_days": 10,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "work_performance",
+      "name": "Performance au travail",
+      "category": "Social",
+      "description": "Amélioration de la productivité et de la concentration au travail",
+      "target_days": 21,
+      "smoothing_window_days": 7,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "financial_stability",
+      "name": "Stabilité financière",
+      "category": "Social",
+      "description": "Amélioration de la situation financière",
+      "target_days": 90,
+      "smoothing_window_days": 30,
+      "confidence": "Élevée"
+    },
+    {
+      "id": "hobby_engagement",
+      "name": "Engagement dans les loisirs",
+      "category": "Social",
+      "description": "Retour aux activités et hobbies abandonnés",
+      "target_days": 45,
+      "smoothing_window_days": 14,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "spiritual_wellbeing",
+      "name": "Bien-être spirituel",
+      "category": "Spirituel",
+      "description": "Connexion avec ses valeurs et son sens de la vie",
+      "target_days": null,
+      "smoothing_window_days": 0,
+      "confidence": "Limitée"
+    },
+    {
+      "id": "purpose_clarity",
+      "name": "Clarté du sens de la vie",
+      "category": "Spirituel",
+      "description": "Développement d'une vision claire de ses objectifs de vie",
+      "target_days": null,
+      "smoothing_window_days": 0,
+      "confidence": "Limitée"
+    },
+    {
+      "id": "gratitude_practice",
+      "name": "Pratique de la gratitude",
+      "category": "Spirituel",
+      "description": "Développement d'une attitude de gratitude quotidienne",
+      "target_days": 30,
+      "smoothing_window_days": 10,
+      "confidence": "Modérée"
+    },
+    {
+      "id": "mindfulness",
+      "name": "Pleine conscience",
+      "category": "Spirituel",
+      "description": "Développement de la capacité à être présent et conscient",
+      "target_days": 45,
+      "smoothing_window_days": 14,
+      "confidence": "Modérée"
+    }
+  ]
+}
