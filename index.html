@@ -1,0 +1,2123 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clarté — Arrêter l'alcool et le tabac, un jour à la fois</title>
+    <meta name="description"
+        content="Clarté est une app mobile calme et privée pour suivre l'arrêt de l'alcool et du tabac. Chaque jour compte comme réussi par défaut : vous ne notez que les écarts. Hors-ligne, sans compte, sans jugement.">
+    <meta name="theme-color" content="#F2F5F3">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Clarté — Arrêter l'alcool et le tabac, un jour à la fois">
+    <meta property="og:description"
+        content="Un tracker de sevrage apaisé et privé. Chaque jour est réussi par défaut ; vous ne notez que les écarts. Alcool & tabac.">
+    <meta property="og:locale" content="fr_FR">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23148F77'/%3E%3Cpath d='M68 38a20 20 0 1 0 0 24' fill='none' stroke='%23F2F5F3' stroke-width='9' stroke-linecap='round'/%3E%3C/svg%3E">
+
+    <style>
+        :root {
+            --bg: #F2F5F3;
+            --bg-2: #ffffff;
+            --bg-3: #E8EEEA;
+            --ink: #12312B;
+            --ink-soft: #37514a;
+            --muted: #5A6E68;
+            --green: #148F77;
+            --green-deep: #0f6f5c;
+            --terracotta: #C96F5A;
+            --gold: #D9A441;
+            --teal: #1E8FA8;
+            --line: rgba(18, 49, 43, 0.10);
+            --shadow-sm: 0 2px 8px rgba(18, 49, 43, 0.06);
+            --shadow: 0 18px 44px rgba(18, 49, 43, 0.12);
+            --shadow-lg: 0 32px 70px rgba(18, 49, 43, 0.18);
+            --radius: 18px;
+            --radius-lg: 28px;
+            --maxw: 1120px;
+            --display: 'Bricolage Grotesque', system-ui, sans-serif;
+            --body: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: var(--body);
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--display);
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            font-weight: 800;
+        }
+
+        .wrap {
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--green-deep);
+            background: var(--bg-3);
+            padding: 7px 14px;
+            border-radius: 999px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--body);
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 14px 26px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--green);
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(20, 143, 119, 0.32);
+        }
+
+        .btn-primary:hover {
+            background: var(--green-deep);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(20, 143, 119, 0.4);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--ink);
+            border: 1.5px solid var(--line);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--green);
+            color: var(--green-deep);
+            transform: translateY(-2px);
+        }
+
+        /* ---------- NAV ---------- */
+        header.nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(242, 245, 243, 0.82);
+            backdrop-filter: saturate(140%) blur(12px);
+            -webkit-backdrop-filter: saturate(140%) blur(12px);
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        header.nav.scrolled {
+            border-bottom-color: var(--line);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 1.28rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand .mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--green);
+            display: grid;
+            place-items: center;
+            flex: none;
+        }
+
+        .brand .mark svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a.link {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a.link:hover {
+            color: var(--green-deep);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--ink);
+            border-radius: 2px;
+            margin: 5px 0;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        /* ---------- HERO ---------- */
+        .hero {
+            position: relative;
+            padding: 72px 0 90px;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: -220px;
+            right: -180px;
+            width: 620px;
+            height: 620px;
+            background: radial-gradient(circle, rgba(20, 143, 119, 0.16), transparent 62%);
+            z-index: 0;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            bottom: -260px;
+            left: -200px;
+            width: 560px;
+            height: 560px;
+            background: radial-gradient(circle, rgba(30, 143, 168, 0.13), transparent 64%);
+            z-index: 0;
+        }
+
+        .hero-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 56px;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5.4vw, 4rem);
+            margin: 22px 0 20px;
+        }
+
+        .hero h1 .accent {
+            color: var(--green-deep);
+        }
+
+        .hero .lede {
+            font-size: 1.2rem;
+            color: var(--ink-soft);
+            max-width: 34ch;
+            margin-bottom: 32px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .store-badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .store-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            background: var(--ink);
+            color: #fff;
+            padding: 11px 18px;
+            border-radius: 14px;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .store-badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .store-badge svg {
+            width: 24px;
+            height: 24px;
+            flex: none;
+        }
+
+        .store-badge small {
+            display: block;
+            font-size: 0.66rem;
+            opacity: 0.8;
+            line-height: 1.1;
+        }
+
+        .store-badge strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.15;
+        }
+
+        .store-note {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin-top: 14px;
+        }
+
+        .trust-row {
+            display: flex;
+            gap: 22px;
+            flex-wrap: wrap;
+            margin-top: 34px;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            font-weight: 500;
+        }
+
+        .trust-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--green);
+            flex: none;
+        }
+
+        /* ---------- PHONE MOCKUP ---------- */
+        .phone-stage {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .phone {
+            position: relative;
+            width: 300px;
+            background: #0c221d;
+            border-radius: 44px;
+            padding: 12px;
+            box-shadow: var(--shadow-lg);
+            z-index: 2;
+        }
+
+        .phone .notch {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 118px;
+            height: 26px;
+            background: #0c221d;
+            border-radius: 999px;
+            z-index: 3;
+        }
+
+        .screen {
+            background: var(--bg);
+            border-radius: 34px;
+            overflow: hidden;
+            aspect-ratio: 300 / 620;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-top {
+            padding: 40px 20px 14px;
+            background: linear-gradient(160deg, var(--green), var(--green-deep));
+            color: #fff;
+        }
+
+        .app-tabs {
+            display: flex;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.16);
+            padding: 4px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .app-tabs span {
+            flex: 1;
+            text-align: center;
+            padding: 6px;
+            border-radius: 999px;
+        }
+
+        .app-tabs span.on {
+            background: #fff;
+            color: var(--green-deep);
+        }
+
+        .streak-num {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 3.4rem;
+            line-height: 1;
+        }
+
+        .streak-label {
+            font-size: 0.82rem;
+            opacity: 0.92;
+            margin-top: 2px;
+        }
+
+        .streak-sub {
+            font-size: 0.72rem;
+            opacity: 0.8;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-body {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+            flex: 1;
+        }
+
+        .mini-card {
+            background: var(--bg-2);
+            border-radius: 14px;
+            padding: 12px 13px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .mini-card .mc-title {
+            font-size: 0.72rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .mini-card .mc-main {
+            font-size: 0.94rem;
+            font-weight: 600;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            flex: none;
+        }
+
+        .dot.green {
+            background: var(--green);
+        }
+
+        .cal-mini {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .cal-mini i {
+            aspect-ratio: 1;
+            border-radius: 6px;
+            background: var(--bg-3);
+        }
+
+        .cal-mini i.g {
+            background: var(--green);
+        }
+
+        .cal-mini i.t {
+            background: var(--terracotta);
+        }
+
+        .badge-strip {
+            display: flex;
+            gap: 8px;
+            font-size: 1.15rem;
+        }
+
+        .badge-strip b {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: var(--bg-3);
+            display: grid;
+            place-items: center;
+        }
+
+        .badge-strip b.earned {
+            background: rgba(217, 164, 65, 0.2);
+        }
+
+        /* floating stat chips near phone */
+        .float-chip {
+            position: absolute;
+            background: var(--bg-2);
+            border-radius: 16px;
+            padding: 12px 15px;
+            box-shadow: var(--shadow);
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .float-chip .ic {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            flex: none;
+        }
+
+        .float-chip .ic svg {
+            width: 20px;
+            height: 20px;
+            color: #fff;
+        }
+
+        .float-chip small {
+            display: block;
+            font-size: 0.68rem;
+            color: var(--muted);
+        }
+
+        .float-chip strong {
+            font-family: var(--display);
+            font-size: 1.15rem;
+            font-weight: 800;
+        }
+
+        .float-chip.one {
+            top: 46px;
+            left: -34px;
+            animation: floaty 6s ease-in-out infinite;
+        }
+
+        .float-chip.two {
+            bottom: 74px;
+            right: -30px;
+            animation: floaty 6s ease-in-out infinite 1.6s;
+        }
+
+        @keyframes floaty {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-11px);
+            }
+        }
+
+        /* ---------- SECTION SHELL ---------- */
+        section {
+            padding: 92px 0;
+        }
+
+        .section-head {
+            max-width: 640px;
+            margin: 0 auto 56px;
+            text-align: center;
+        }
+
+        .section-head h2 {
+            font-size: clamp(1.9rem, 3.6vw, 2.7rem);
+            margin: 16px 0 14px;
+        }
+
+        .section-head p {
+            font-size: 1.1rem;
+            color: var(--ink-soft);
+        }
+
+        /* ---------- CONCEPT ---------- */
+        .concept {
+            background: var(--bg-2);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .concept-card {
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+            padding: 34px 30px;
+            border: 1px solid var(--line);
+        }
+
+        .concept-card .num {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--green);
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            background: var(--bg-3);
+            display: grid;
+            place-items: center;
+            margin-bottom: 18px;
+        }
+
+        .concept-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .concept-card p {
+            color: var(--ink-soft);
+            font-size: 0.98rem;
+        }
+
+        .concept-quote {
+            margin-top: 44px;
+            text-align: center;
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: clamp(1.3rem, 3vw, 1.9rem);
+            line-height: 1.35;
+            color: var(--ink);
+            max-width: 26ch;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .concept-quote em {
+            color: var(--green-deep);
+            font-style: normal;
+        }
+
+        /* ---------- TRACKERS ---------- */
+        .trackers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 26px;
+        }
+
+        .tracker-card {
+            border-radius: var(--radius-lg);
+            padding: 40px 36px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tracker-card.alcohol {
+            background: linear-gradient(155deg, var(--green), var(--green-deep));
+        }
+
+        .tracker-card.tobacco {
+            background: linear-gradient(155deg, var(--teal), #146579);
+        }
+
+        .tracker-card .t-ic {
+            font-size: 2rem;
+            width: 62px;
+            height: 62px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.16);
+            display: grid;
+            place-items: center;
+            margin-bottom: 22px;
+        }
+
+        .tracker-card h3 {
+            font-size: 1.7rem;
+            margin-bottom: 12px;
+        }
+
+        .tracker-card p {
+            opacity: 0.95;
+            font-size: 1rem;
+            margin-bottom: 22px;
+        }
+
+        .tracker-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        .tracker-card li {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            font-size: 0.96rem;
+        }
+
+        .tracker-card li svg {
+            width: 20px;
+            height: 20px;
+            flex: none;
+            margin-top: 2px;
+            opacity: 0.95;
+        }
+
+        /* ---------- FEATURES ---------- */
+        .features {
+            background: var(--bg-2);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .feature {
+            background: var(--bg);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 30px 26px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .feature .f-ic {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: var(--bg-3);
+            display: grid;
+            place-items: center;
+            margin-bottom: 18px;
+        }
+
+        .feature .f-ic svg {
+            width: 25px;
+            height: 25px;
+            color: var(--green-deep);
+        }
+
+        .feature h3 {
+            font-size: 1.2rem;
+            margin-bottom: 9px;
+        }
+
+        .feature p {
+            color: var(--ink-soft);
+            font-size: 0.95rem;
+        }
+
+        /* ---------- BODY / TIMELINE ---------- */
+        .body-section {
+            position: relative;
+        }
+
+        .timeline-switch {
+            display: inline-flex;
+            gap: 5px;
+            background: var(--bg-2);
+            border: 1px solid var(--line);
+            padding: 5px;
+            border-radius: 999px;
+            margin: 0 auto 44px;
+        }
+
+        .timeline-switch button {
+            border: none;
+            background: transparent;
+            font-family: var(--body);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--muted);
+            padding: 10px 26px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .timeline-switch button.on {
+            color: #fff;
+        }
+
+        .timeline-switch button.on[data-track="alcohol"] {
+            background: var(--green);
+        }
+
+        .timeline-switch button.on[data-track="tobacco"] {
+            background: var(--teal);
+        }
+
+        .timeline {
+            max-width: 720px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 26px;
+            top: 12px;
+            bottom: 12px;
+            width: 2px;
+            background: var(--line);
+        }
+
+        .tl-item {
+            position: relative;
+            padding: 0 0 26px 74px;
+        }
+
+        .tl-item:last-child {
+            padding-bottom: 0;
+        }
+
+        .tl-node {
+            position: absolute;
+            left: 8px;
+            top: 2px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            background: var(--bg-2);
+            border: 2px solid var(--line);
+            color: var(--muted);
+            z-index: 1;
+        }
+
+        .tl-item.done .tl-node {
+            background: var(--green);
+            border-color: var(--green);
+            color: #fff;
+        }
+
+        [data-active="tobacco"] .tl-item.done .tl-node {
+            background: var(--teal);
+            border-color: var(--teal);
+        }
+
+        .tl-item.current .tl-node {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #fff;
+        }
+
+        .tl-card {
+            background: var(--bg-2);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tl-head {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .tl-when {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 1.15rem;
+        }
+
+        .tl-tag {
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--green-deep);
+            background: var(--bg-3);
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .tl-card p {
+            color: var(--ink-soft);
+            font-size: 0.96rem;
+        }
+
+        .tl-card p .ref {
+            color: var(--green-deep);
+            font-weight: 600;
+            font-size: 0.8rem;
+            vertical-align: super;
+        }
+
+        .track-pane {
+            display: none;
+        }
+
+        .track-pane.on {
+            display: block;
+        }
+
+        .safety-note {
+            max-width: 720px;
+            margin: 34px auto 0;
+            background: rgba(217, 164, 65, 0.12);
+            border: 1px solid rgba(217, 164, 65, 0.4);
+            border-radius: var(--radius);
+            padding: 18px 22px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .safety-note svg {
+            width: 22px;
+            height: 22px;
+            color: var(--gold);
+            flex: none;
+            margin-top: 2px;
+        }
+
+        .safety-note p {
+            font-size: 0.92rem;
+            color: var(--ink-soft);
+        }
+
+        .sources {
+            max-width: 720px;
+            margin: 20px auto 0;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .sources summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--ink-soft);
+        }
+
+        .sources ul {
+            list-style: none;
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sources a {
+            color: var(--green-deep);
+            text-decoration: underline;
+            word-break: break-word;
+        }
+
+        /* ---------- PRIVACY ---------- */
+        .privacy {
+            background: var(--ink);
+            color: #eaf1ee;
+        }
+
+        .privacy .section-head h2 {
+            color: #fff;
+        }
+
+        .privacy .section-head p {
+            color: #b9cac4;
+        }
+
+        .privacy .eyebrow {
+            background: rgba(255, 255, 255, 0.1);
+            color: #9fe6d5;
+        }
+
+        .privacy-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .privacy-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            text-align: center;
+        }
+
+        .privacy-card .p-ic {
+            width: 52px;
+            height: 52px;
+            border-radius: 15px;
+            background: rgba(20, 143, 119, 0.2);
+            display: grid;
+            place-items: center;
+            margin: 0 auto 16px;
+        }
+
+        .privacy-card .p-ic svg {
+            width: 26px;
+            height: 26px;
+            color: #4fd3b6;
+        }
+
+        .privacy-card h3 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .privacy-card p {
+            font-size: 0.9rem;
+            color: #b9cac4;
+        }
+
+        /* ---------- STATS ---------- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-2);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 34px 30px;
+            text-align: center;
+        }
+
+        .stat-card .s-num {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 2.6rem;
+            color: var(--green-deep);
+            line-height: 1;
+        }
+
+        .stat-card .s-label {
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .stat-card .s-desc {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        /* ---------- FAQ ---------- */
+        .faq-list {
+            max-width: 760px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .faq-item {
+            background: var(--bg-2);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .faq-item summary {
+            cursor: pointer;
+            list-style: none;
+            padding: 20px 24px;
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 1.08rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-item summary .chev {
+            flex: none;
+            width: 22px;
+            height: 22px;
+            color: var(--green);
+            transition: transform 0.25s ease;
+        }
+
+        .faq-item[open] summary .chev {
+            transform: rotate(180deg);
+        }
+
+        .faq-item .faq-body {
+            padding: 0 24px 22px;
+            color: var(--ink-soft);
+            font-size: 0.98rem;
+        }
+
+        /* ---------- CTA ---------- */
+        .cta {
+            text-align: center;
+        }
+
+        .cta-box {
+            background: linear-gradient(155deg, var(--green), var(--green-deep));
+            border-radius: 34px;
+            padding: 70px 40px;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box::before {
+            content: "";
+            position: absolute;
+            top: -120px;
+            right: -80px;
+            width: 360px;
+            height: 360px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.14), transparent 65%);
+        }
+
+        .cta-box h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: #fff;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .cta-box p {
+            font-size: 1.15rem;
+            opacity: 0.95;
+            max-width: 40ch;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+
+        .cta-box .store-badges {
+            justify-content: center;
+            position: relative;
+        }
+
+        .cta-box .store-badge {
+            background: #fff;
+            color: var(--ink);
+        }
+
+        .cta-box .store-note {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* ---------- FOOTER ---------- */
+        footer {
+            padding: 56px 0 40px;
+            background: var(--bg-2);
+            border-top: 1px solid var(--line);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+
+        .footer-brand {
+            max-width: 320px;
+        }
+
+        .footer-brand p {
+            color: var(--muted);
+            font-size: 0.92rem;
+            margin-top: 14px;
+        }
+
+        .footer-cols {
+            display: flex;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+
+        .footer-col h4 {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        .footer-col a {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+            margin-bottom: 10px;
+            transition: color 0.2s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--green-deep);
+        }
+
+        .footer-bottom {
+            margin-top: 44px;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .footer-disclaimer {
+            max-width: var(--maxw);
+            margin: 24px auto 0;
+            padding: 0 24px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* ---------- reveal on scroll ---------- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.in {
+            opacity: 1;
+            transform: none;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 940px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+
+            .hero .lede {
+                max-width: 46ch;
+            }
+
+            .concept-grid,
+            .features-grid,
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .privacy-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            section {
+                padding: 68px 0;
+            }
+
+            .nav-links {
+                position: fixed;
+                inset: 72px 0 auto 0;
+                background: var(--bg);
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                padding: 12px 24px 24px;
+                border-bottom: 1px solid var(--line);
+                box-shadow: var(--shadow);
+                transform: translateY(-140%);
+                transition: transform 0.3s ease;
+            }
+
+            .nav-links.open {
+                transform: translateY(0);
+            }
+
+            .nav-links a.link {
+                padding: 14px 4px;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .nav-links .btn {
+                margin-top: 14px;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .concept-grid,
+            .features-grid,
+            .stats-grid,
+            .trackers-grid,
+            .privacy-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .float-chip {
+                display: none;
+            }
+
+            .footer-cols {
+                gap: 36px;
+            }
+
+            .tracker-card {
+                padding: 32px 26px;
+            }
+        }
+    </style>
+</head>
+
+<body data-active="alcohol">
+
+    <!-- ===== NAV ===== -->
+    <header class="nav" id="nav">
+        <div class="wrap nav-inner">
+            <a href="#top" class="brand">
+                <span class="mark">
+                    <svg viewBox="0 0 100 100" aria-hidden="true">
+                        <path d="M68 38a20 20 0 1 0 0 24" fill="none" stroke="#F2F5F3" stroke-width="9"
+                            stroke-linecap="round" />
+                    </svg>
+                </span>
+                Clarté
+            </a>
+            <nav class="nav-links" id="navLinks">
+                <a class="link" href="#concept">Concept</a>
+                <a class="link" href="#trackers">Trackers</a>
+                <a class="link" href="#features">Fonctions</a>
+                <a class="link" href="#corps">Mon corps</a>
+                <a class="link" href="#confidentialite">Confidentialité</a>
+                <a class="btn btn-primary" href="#telecharger">Télécharger</a>
+            </nav>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main id="top">
+
+        <!-- ===== HERO ===== -->
+        <section class="hero">
+            <div class="wrap hero-grid">
+                <div class="hero-copy reveal">
+                    <span class="eyebrow">🌿 Alcool &amp; tabac · une seule app</span>
+                    <h1>Chaque jour compte comme <span class="accent">réussi</span>. Vous ne notez que les écarts.</h1>
+                    <p class="lede">Clarté est un compagnon de sevrage calme et privé. Pas de case à cocher chaque
+                        jour&nbsp;: on part du principe que tout va bien, et vous suivez vos progrès sans pression.</p>
+                    <div class="hero-cta">
+                        <a href="#telecharger" class="btn btn-primary">Télécharger l'app</a>
+                        <a href="#concept" class="btn btn-ghost">Découvrir le concept</a>
+                    </div>
+                    <div class="trust-row">
+                        <div class="trust-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg> Hors-ligne d'abord
+                        </div>
+                        <div class="trust-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 6 9 17l-5-5" />
+                            </svg> Sans compte
+                        </div>
+                        <div class="trust-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M8 12h8" />
+                            </svg> Sans jugement
+                        </div>
+                    </div>
+                </div>
+
+                <div class="phone-stage reveal">
+                    <div class="float-chip one">
+                        <span class="ic" style="background:var(--green)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2v20M2 12h20" />
+                            </svg>
+                        </span>
+                        <span>
+                            <small>Série en cours</small>
+                            <strong>42 jours</strong>
+                        </span>
+                    </div>
+                    <div class="float-chip two">
+                        <span class="ic" style="background:var(--gold)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.3 7.2 16.7l.9-5.4L4.2 7.7l5.4-.8z" />
+                            </svg>
+                        </span>
+                        <span>
+                            <small>Économisé</small>
+                            <strong>168 €</strong>
+                        </span>
+                    </div>
+
+                    <div class="phone">
+                        <div class="notch"></div>
+                        <div class="screen">
+                            <div class="app-top">
+                                <div class="app-tabs">
+                                    <span class="on">Alcool</span>
+                                    <span>Tabac</span>
+                                </div>
+                                <div class="streak-num">42</div>
+                                <div class="streak-label">jours consécutifs réussis</div>
+                                <div class="streak-sub">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L12 14.3 7.2 16.7l.9-5.4L4.2 7.7l5.4-.8z" />
+                                    </svg>
+                                    Prochain badge dans 18 jours
+                                </div>
+                            </div>
+                            <div class="app-body">
+                                <div class="mini-card">
+                                    <div class="mc-title">Aujourd'hui</div>
+                                    <div class="mc-main"><span class="dot green"></span>Journée réussie</div>
+                                </div>
+                                <div class="mini-card">
+                                    <div class="mc-title">Juillet</div>
+                                    <div class="cal-mini">
+                                        <i class="g"></i><i class="g"></i><i class="g"></i><i class="t"></i><i
+                                            class="g"></i><i class="g"></i><i class="g"></i>
+                                        <i class="g"></i><i class="g"></i><i class="g"></i><i class="g"></i><i
+                                            class="g"></i><i class="g"></i><i class="g"></i>
+                                        <i class="g"></i><i class="g"></i><i class="g"></i><i class="g"></i><i
+                                            class="g"></i><i class="g"></i><i class="g"></i>
+                                    </div>
+                                </div>
+                                <div class="mini-card">
+                                    <div class="mc-title">Badges</div>
+                                    <div class="badge-strip" style="margin-top:8px">
+                                        <b class="earned">🌱</b><b class="earned">🌿</b><b class="earned">🍃</b><b
+                                            class="earned">🌾</b><b>🌻</b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CONCEPT ===== -->
+        <section class="concept" id="concept">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Le concept</span>
+                    <h2>Le suivi qui ne demande rien tant que tout va bien</h2>
+                    <p>Fini les rappels culpabilisants et les cases à cocher. Clarté renverse la logique&nbsp;: le
+                        succès est la valeur par défaut.</p>
+                </div>
+                <div class="concept-grid">
+                    <div class="concept-card reveal">
+                        <div class="num">1</div>
+                        <h3>Vous choisissez une date de début</h3>
+                        <p>Pour l'alcool, le tabac, ou les deux. C'est le seul geste de départ&nbsp;: à partir de là, le
+                            compteur avance tout seul.</p>
+                    </div>
+                    <div class="concept-card reveal">
+                        <div class="num">2</div>
+                        <h3>Chaque jour est réussi par défaut</h3>
+                        <p>Sans alcool, sans cigarette&nbsp;: rien à faire. Votre série grandit d'elle-même, jour après
+                            jour, sans action de votre part.</p>
+                    </div>
+                    <div class="concept-card reveal">
+                        <div class="num">3</div>
+                        <h3>Vous ne notez que les écarts</h3>
+                        <p>Un verre, une cigarette&nbsp;? Vous l'enregistrez en deux secondes, avec la quantité. Sans
+                            drame&nbsp;: un écart fait reculer, il ne remet pas tout à zéro.</p>
+                    </div>
+                </div>
+                <p class="concept-quote reveal">« Le quotidien ne demande <em>aucune action</em> tant que tout va
+                    bien. »</p>
+            </div>
+        </section>
+
+        <!-- ===== TRACKERS ===== -->
+        <section id="trackers">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Deux trackers, un même concept</span>
+                    <h2>Alcool, tabac, ou les deux à la fois</h2>
+                    <p>Activez ce qui vous concerne. Un sélecteur en haut de l'app bascule d'une habitude à l'autre —
+                        tout s'adapte&nbsp;: série, calendrier, corps, badges et statistiques.</p>
+                </div>
+                <div class="trackers-grid">
+                    <div class="tracker-card alcohol reveal">
+                        <div class="t-ic">🍷</div>
+                        <h3>Arrêt de l'alcool</h3>
+                        <p>Suivez vos jours sans alcool et voyez concrètement ce que vous gagnez.</p>
+                        <ul>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5" />
+                                </svg> Verres évités, euros et calories économisés
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5" />
+                                </svg> Timeline « Mon corps » sourcée (24 h → 1 an et +)
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5" />
+                                </svg> Rappel bienveillant&nbsp;: un arrêt brutal peut nécessiter un suivi médical
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tracker-card tobacco reveal">
+                        <div class="t-ic">🚭</div>
+                        <h3>Arrêt du tabac</h3>
+                        <p>Chaque cigarette non fumée compte — et votre corps le ressent vite.</p>
+                        <ul>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5" />
+                                </svg> Cigarettes évitées et euros économisés (au paquet)
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5" />
+                                </svg> Timeline officielle OMS (20 min → 15 ans)
+                            </li>
+                            <li>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 6 9 17l-5-5" />
+                                </svg> Ressources d'accompagnement (Tabac Info Service 3989)
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FEATURES ===== -->
+        <section class="features" id="features">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Tout est là</span>
+                    <h2>Simple à vivre, riche en repères</h2>
+                    <p>Six écrans pensés pour vous motiver sans jamais vous mettre la pression.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature reveal">
+                        <div class="f-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M13 2 3 14h9l-1 8 10-12h-9z" />
+                            </svg>
+                        </div>
+                        <h3>Série en cours</h3>
+                        <p>Un grand chiffre au sommet&nbsp;: vos jours consécutifs réussis, la date de début et le
+                            prochain badge à décrocher.</p>
+                    </div>
+                    <div class="feature reveal">
+                        <div class="f-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="M12 8v4l3 2" />
+                            </svg>
+                        </div>
+                        <h3>Statut du jour</h3>
+                        <p>Aujourd'hui est réussi par défaut. Un écart&nbsp;? Le bouton « J'ai bu » / « J'ai fumé »
+                            ouvre un simple stepper − / +.</p>
+                    </div>
+                    <div class="feature reveal">
+                        <div class="f-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <path d="M3 10h18M8 2v4M16 2v4" />
+                            </svg>
+                        </div>
+                        <h3>Calendrier</h3>
+                        <p>Un vrai calendrier mensuel. Vert pour les jours réussis, terracotta pour les écarts. Touchez
+                            un jour pour le corriger.</p>
+                    </div>
+                    <div class="feature reveal">
+                        <div class="f-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
+                            </svg>
+                        </div>
+                        <h3>Mon corps</h3>
+                        <p>Une timeline sourcée des bienfaits, palier par palier. Chaque étape franchie s'éclaire en
+                            vert, la suivante en doré.</p>
+                    </div>
+                    <div class="feature reveal">
+                        <div class="f-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="9" r="6" />
+                                <path d="M8.5 13.5 7 22l5-3 5 3-1.5-8.5" />
+                            </svg>
+                        </div>
+                        <h3>Badges</h3>
+                        <p>De 1 jour 🌱 à 1 an ☀️. Basés sur votre meilleure série&nbsp;: un badge gagné reste acquis,
+                            même après un écart.</p>
+                    </div>
+                    <div class="feature reveal">
+                        <div class="f-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3" />
+                                <path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H7a1.6 1.6 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V7a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z" />
+                            </svg>
+                        </div>
+                        <h3>Réglages</h3>
+                        <p>Ajustez à tout moment la date de début, la conso d'avant, le prix unitaire, et activez ou
+                            désactivez chaque tracker.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== MON CORPS / TIMELINE ===== -->
+        <section class="body-section" id="corps">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Mon corps</span>
+                    <h2>Voyez ce qui se répare, étape par étape</h2>
+                    <p>Une timeline claire et sourcée. Chaque palier s'appuie sur des références publiques que vous
+                        pouvez consulter directement dans l'app.</p>
+                </div>
+
+                <div style="text-align:center">
+                    <div class="timeline-switch reveal" role="tablist">
+                        <button class="on" data-track="alcohol" role="tab" aria-selected="true">🍷 Alcool</button>
+                        <button data-track="tobacco" role="tab" aria-selected="false">🚭 Tabac</button>
+                    </div>
+                </div>
+
+                <!-- ALCOHOL PANE -->
+                <div class="track-pane on" data-pane="alcohol">
+                    <div class="timeline">
+                        <div class="tl-item done reveal">
+                            <div class="tl-node">✓</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">24 heures</span><span class="tl-tag">Hydratation &amp; glycémie</span></div>
+                                <p>L'alcool a quitté l'organisme. La déshydratation se résorbe (meilleure digestion,
+                                    énergie, concentration) et la glycémie recommence à se réguler normalement.<span class="ref">[A1]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item done reveal">
+                            <div class="tl-node">✓</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">48–72 heures</span><span class="tl-tag">Sevrage</span></div>
+                                <p>Chez les gros buveurs, c'est le pic des symptômes de sevrage — le passage le plus
+                                    délicat, parfois médicalement risqué. Ensuite, ça ne fait que s'améliorer.<span class="ref">[A2]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item done reveal">
+                            <div class="tl-node">✓</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">1 semaine</span><span class="tl-tag">Sommeil, foie, cerveau</span></div>
+                                <p>L'alcool perturbe le cycle du sommeil&nbsp;: après une semaine sans, on se réveille
+                                    plus reposé. En cas de dommage léger, le foie peut déjà réduire sa graisse et
+                                    cicatriser. Les fonctions cognitives s'améliorent chez les buveurs légers à
+                                    modérés.<span class="ref">[A1]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item current reveal">
+                            <div class="tl-node">★</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">1 mois</span><span class="tl-tag">Poids, tension, cancer</span></div>
+                                <p>La résistance à l'insuline baisse d'environ 25 % et la tension d'environ 6 %. Les
+                                    facteurs de croissance liés au cancer déclinent. Perte de poids et de graisse,
+                                    meilleure peau, troubles digestifs résorbés en général sous 4 semaines.<span class="ref">[A3]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item reveal">
+                            <div class="tl-node">6m</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">6 mois</span><span class="tl-tag">Foie &amp; immunité</span></div>
+                                <p>Chez un buveur modéré, les dommages hépatiques peuvent être entièrement réversibles.
+                                    Même les gros buveurs combattent mieux les infections.<span class="ref">[A4]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item reveal">
+                            <div class="tl-node">1a</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">1 an et +</span><span class="tl-tag">Cœur &amp; cancer</span></div>
+                                <p>Le risque cardiovasculaire baisse avec la tension. Une étude sur plus de 4 millions
+                                    d'adultes a mesuré une baisse du risque de cancers liés à l'alcool, même chez les
+                                    anciens buveurs légers.<span class="ref">[A5]</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="safety-note reveal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+                        </svg>
+                        <p>En cas de forte consommation, un arrêt brutal peut être dangereux (le sevrage peut nécessiter
+                            un suivi médical)&nbsp;: parlez-en à un médecin.</p>
+                    </div>
+
+                    <details class="sources reveal">
+                        <summary>Sources — Alcool</summary>
+                        <ul>
+                            <li>[A1] The Conversation / UNSW — timeline sourcée (2025) : <a href="https://theconversation.com/even-a-day-off-alcohol-makes-a-difference-our-timeline-maps-the-health-benefits-when-you-stop-drinking-249272" target="_blank" rel="noopener">theconversation.com</a></li>
+                            <li>[A2] NIAAA — alcool &amp; sevrage : <a href="https://arcr.niaaa.nih.gov/media/671/download" target="_blank" rel="noopener">arcr.niaaa.nih.gov</a></li>
+                            <li>[A3] Mehta et al., BMJ Open (2018) — 1 mois d'abstinence : <a href="https://bmjopen.bmj.com/content/8/5/e020673" target="_blank" rel="noopener">bmjopen.bmj.com</a></li>
+                            <li>[A4] Régénération hépatique — PubMed (2021) : <a href="https://pubmed.ncbi.nlm.nih.gov/33868869/" target="_blank" rel="noopener">pubmed.ncbi.nlm.nih.gov</a></li>
+                            <li>[A5] Risque de cancer &amp; arrêt — JAMA Network Open (2022) : <a href="https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2795595" target="_blank" rel="noopener">jamanetwork.com</a></li>
+                        </ul>
+                    </details>
+                </div>
+
+                <!-- TOBACCO PANE -->
+                <div class="track-pane" data-pane="tobacco">
+                    <div class="timeline">
+                        <div class="tl-item done reveal">
+                            <div class="tl-node">✓</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">20 minutes</span><span class="tl-tag">Cœur</span></div>
+                                <p>Le rythme cardiaque et la tension artérielle diminuent.<span class="ref">[T1]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item done reveal">
+                            <div class="tl-node">✓</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">12 heures</span><span class="tl-tag">Oxygène</span></div>
+                                <p>Le taux de monoxyde de carbone dans le sang redescend à la normale&nbsp;: l'oxygène
+                                    recircule correctement.<span class="ref">[T1]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item current reveal">
+                            <div class="tl-node">★</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">2 à 12 semaines</span><span class="tl-tag">Circulation &amp; souffle</span></div>
+                                <p>La circulation s'améliore et la fonction pulmonaire augmente.<span class="ref">[T1]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item reveal">
+                            <div class="tl-node">9m</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">1 à 9 mois</span><span class="tl-tag">Respiration</span></div>
+                                <p>La toux et l'essoufflement diminuent&nbsp;; les poumons se nettoient de leurs
+                                    sécrétions.<span class="ref">[T1]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item reveal">
+                            <div class="tl-node">1a</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">1 an</span><span class="tl-tag">Cœur</span></div>
+                                <p>Le risque de maladie coronarienne est environ la moitié de celui d'un fumeur.<span class="ref">[T1]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item reveal">
+                            <div class="tl-node">5a</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">5 ans</span><span class="tl-tag">AVC</span></div>
+                                <p>Le risque d'AVC rejoint progressivement celui d'un non-fumeur (5 à 15 ans après
+                                    l'arrêt).<span class="ref">[T1]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item reveal">
+                            <div class="tl-node">10a</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">10 ans</span><span class="tl-tag">Cancer</span></div>
+                                <p>Le risque de cancer du poumon tombe à environ la moitié de celui d'un fumeur&nbsp;; les
+                                    risques de cancers de la bouche, gorge, œsophage, vessie, col de l'utérus et pancréas
+                                    diminuent.<span class="ref">[T1]</span></p>
+                            </div>
+                        </div>
+                        <div class="tl-item reveal">
+                            <div class="tl-node">15a</div>
+                            <div class="tl-card">
+                                <div class="tl-head"><span class="tl-when">15 ans</span><span class="tl-tag">Cœur</span></div>
+                                <p>Le risque de maladie coronarienne rejoint celui d'un non-fumeur.<span class="ref">[T1]</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="safety-note reveal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+                        </svg>
+                        <p>Contrairement à l'alcool, arrêter de fumer brutalement n'est pas dangereux, mais le manque de
+                            nicotine peut être inconfortable les premiers jours. Un accompagnement (substituts, ligne
+                            Tabac Info Service 3989 en France) augmente les chances de réussite.</p>
+                    </div>
+
+                    <details class="sources reveal">
+                        <summary>Sources — Tabac</summary>
+                        <ul>
+                            <li>[T1] OMS — Bienfaits de l'arrêt du tabac : <a href="https://www.who.int/news-room/questions-and-answers/item/tobacco-health-benefits-of-smoking-cessation" target="_blank" rel="noopener">who.int</a></li>
+                            <li>[T2] CDC — Benefits of Quitting Smoking (2024) : <a href="https://www.cdc.gov/tobacco/about/benefits-of-quitting.html" target="_blank" rel="noopener">cdc.gov</a></li>
+                            <li>[T3] American Cancer Society — Health benefits over time : <a href="https://www.cancer.org/cancer/risk-prevention/tobacco/guide-quitting-smoking/benefits-of-quitting-smoking-over-time.html" target="_blank" rel="noopener">cancer.org</a></li>
+                        </ul>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== STATS ===== -->
+        <section>
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Ce que vous gagnez</span>
+                    <h2>Des chiffres concrets, pas des promesses</h2>
+                    <p>À chaque jour réussi, Clarté calcule vos gains à partir de votre conso d'avant et de vos prix.</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card reveal">
+                        <div class="s-num">€</div>
+                        <div class="s-label">Argent économisé</div>
+                        <div class="s-desc">Verres évités × prix, ou cigarettes évitées ÷ 20 × prix du paquet.</div>
+                    </div>
+                    <div class="stat-card reveal">
+                        <div class="s-num">🔥</div>
+                        <div class="s-label">Calories &amp; unités évitées</div>
+                        <div class="s-desc">≈ 150 kcal par verre évité, et le compte exact de cigarettes non fumées.</div>
+                    </div>
+                    <div class="stat-card reveal">
+                        <div class="s-num">☀️</div>
+                        <div class="s-label">Jours réussis</div>
+                        <div class="s-desc">Total écoulé moins vos écarts&nbsp;: votre progrès réel, sans exagération.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PRIVACY ===== -->
+        <section class="privacy" id="confidentialite">
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Vos données restent à vous</span>
+                    <h2>Privé par conception</h2>
+                    <p>Clarté est pensée hors-ligne d'abord. Rien ne quitte votre téléphone.</p>
+                </div>
+                <div class="privacy-grid">
+                    <div class="privacy-card reveal">
+                        <div class="p-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="4" y="11" width="16" height="10" rx="2" />
+                                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                            </svg>
+                        </div>
+                        <h3>Aucun compte</h3>
+                        <p>Pas d'e-mail, pas de mot de passe. Vous ouvrez l'app et c'est parti.</p>
+                    </div>
+                    <div class="privacy-card reveal">
+                        <div class="p-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 10h-1V7a5 5 0 0 0-10 0v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2z" />
+                            </svg>
+                        </div>
+                        <h3>Données locales</h3>
+                        <p>Tout est stocké sur votre appareil. Aucun serveur ne collecte quoi que ce soit.</p>
+                    </div>
+                    <div class="privacy-card reveal">
+                        <div class="p-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                        </div>
+                        <h3>Zéro pistage</h3>
+                        <p>Pas de publicité, pas de traceurs, pas de revente de données. Jamais.</p>
+                    </div>
+                    <div class="privacy-card reveal">
+                        <div class="p-ic">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                            </svg>
+                        </div>
+                        <h3>Export / import</h3>
+                        <p>Vos données vous appartiennent&nbsp;: exportez-les en JSON, réimportez-les quand vous voulez.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section>
+            <div class="wrap">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Questions fréquentes</span>
+                    <h2>Ce qu'il faut savoir</h2>
+                </div>
+                <div class="faq-list">
+                    <details class="faq-item reveal">
+                        <summary>Dois-je cocher chaque jour&nbsp;?
+                            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </summary>
+                        <div class="faq-body">Non. C'est tout l'intérêt de Clarté&nbsp;: chaque jour est réussi par
+                            défaut. Vous n'intervenez que le jour où il y a un écart, pour le noter avec sa quantité.</div>
+                    </details>
+                    <details class="faq-item reveal">
+                        <summary>Un écart remet-il mon compteur à zéro&nbsp;?
+                            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </summary>
+                        <div class="faq-body">Votre série en cours repart, mais vos badges déjà gagnés restent acquis, et
+                            votre « capital récupération » ne fait que reculer de quelques jours — il ne repart pas de
+                            zéro. Un écart n'efface pas vos progrès.</div>
+                    </details>
+                    <details class="faq-item reveal">
+                        <summary>Puis-je suivre l'alcool ET le tabac&nbsp;?
+                            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </summary>
+                        <div class="faq-body">Oui. Activez l'un, l'autre, ou les deux. Un sélecteur en haut de l'app
+                            bascule entre les trackers, chacun avec sa propre date de début, ses stats et sa timeline.</div>
+                    </details>
+                    <details class="faq-item reveal">
+                        <summary>Mes données sont-elles envoyées quelque part&nbsp;?
+                            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </summary>
+                        <div class="faq-body">Non. Clarté fonctionne hors-ligne et stocke tout localement sur votre
+                            téléphone. Aucun compte, aucun serveur, aucun traceur.</div>
+                    </details>
+                    <details class="faq-item reveal">
+                        <summary>Clarté remplace-t-elle un suivi médical&nbsp;?
+                            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </summary>
+                        <div class="faq-body">Non. Ce n'est pas un dispositif médical et cela ne remplace pas un avis
+                            professionnel. Les paliers de la timeline sont des moyennes de groupe&nbsp;; la récupération
+                            varie d'une personne à l'autre. En cas de forte consommation d'alcool, parlez-en à un
+                            médecin avant d'arrêter.</div>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CTA / DOWNLOAD ===== -->
+        <section class="cta" id="telecharger">
+            <div class="wrap">
+                <div class="cta-box reveal">
+                    <h2>Commencez aujourd'hui. En clair.</h2>
+                    <p>Clarté arrive bientôt sur l'App Store et Google Play. Chaque jour compte déjà comme réussi.</p>
+                    <div class="store-badges">
+                        <a class="store-badge" href="#" aria-label="Bientôt sur l'App Store">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 1.4c.1 1-.3 2-1 2.8-.7.8-1.7 1.4-2.7 1.3-.1-1 .4-2 1-2.7.7-.8 1.8-1.4 2.7-1.4zM19.6 17c-.5 1.1-.7 1.6-1.3 2.6-.9 1.4-2.1 3.1-3.6 3.1-1.3 0-1.7-.9-3.5-.9-1.8 0-2.2.8-3.5.9-1.5.1-2.6-1.5-3.5-2.9C1.9 16.5.6 11.6 2.4 8.4c.9-1.6 2.4-2.6 4-2.6 1.5 0 2.5.9 3.7.9 1.2 0 1.9-.9 3.7-.9 1.4 0 2.9.8 3.9 2.1-3.4 1.9-2.9 6.8.9 8.1z"/></svg>
+                            <span><small>Bientôt sur</small><strong>App Store</strong></span>
+                        </a>
+                        <a class="store-badge" href="#" aria-label="Bientôt sur Google Play">
+                            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.3c-.3.3-.5.8-.5 1.4v16.6c0 .6.2 1.1.5 1.4l.1.1L13 12.1v-.2L3.7 2.2zM16.3 15.4l-3.1-3.1v-.2l3.1-3.1.1.1 3.7 2.1c1.1.6 1.1 1.6 0 2.2l-3.8 2zM15.7 16l-3.2-3.2L3.6 22c.4.4 1 .4 1.7.1L15.7 16M15.7 8 5.3 2.1c-.7-.4-1.3-.3-1.7.1l8.9 8.9L15.7 8z"/></svg>
+                            <span><small>Bientôt sur</small><strong>Google Play</strong></span>
+                        </a>
+                    </div>
+                    <p class="store-note">Disponible prochainement sur iOS et Android.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="wrap">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <a href="#top" class="brand">
+                        <span class="mark">
+                            <svg viewBox="0 0 100 100" aria-hidden="true">
+                                <path d="M68 38a20 20 0 1 0 0 24" fill="none" stroke="#F2F5F3" stroke-width="9" stroke-linecap="round" />
+                            </svg>
+                        </span>
+                        Clarté
+                    </a>
+                    <p>Un compagnon de sevrage calme et privé, pour l'arrêt de l'alcool et du tabac. Sans jugement, un
+                        jour à la fois.</p>
+                </div>
+                <div class="footer-cols">
+                    <div class="footer-col">
+                        <h4>App</h4>
+                        <a href="#concept">Concept</a>
+                        <a href="#features">Fonctionnalités</a>
+                        <a href="#corps">Mon corps</a>
+                        <a href="#telecharger">Télécharger</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Confiance</h4>
+                        <a href="#confidentialite">Confidentialité</a>
+                        <a href="#corps">Sources</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Aide</h4>
+                        <a href="https://www.tabac-info-service.fr/" target="_blank" rel="noopener">Tabac Info Service</a>
+                        <a href="https://www.alcool-info-service.fr/" target="_blank" rel="noopener">Alcool Info Service</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 Clarté. Tous droits réservés.</span>
+                <span>Fait avec calme 🌿</span>
+            </div>
+        </div>
+        <p class="footer-disclaimer">
+            Clarté n'est pas un dispositif médical et ne remplace pas un avis professionnel. Les paliers présentés sont
+            des moyennes de groupe&nbsp;; la récupération varie selon chaque personne. En cas de forte consommation
+            d'alcool, un arrêt brutal peut être dangereux&nbsp;: consultez un médecin. Pour un accompagnement en France,
+            appelez Tabac Info Service (3989) ou Alcool Info Service (0 980 980 930).
+        </p>
+    </footer>
+
+    <script>
+        // sticky nav shadow
+        const nav = document.getElementById('nav');
+        const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // mobile menu
+        const toggle = document.getElementById('navToggle');
+        const links = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => {
+            const open = links.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        links.querySelectorAll('a').forEach(a =>
+            a.addEventListener('click', () => {
+                links.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            })
+        );
+
+        // timeline switch (alcohol / tobacco)
+        const switchBtns = document.querySelectorAll('.timeline-switch button');
+        const panes = document.querySelectorAll('.track-pane');
+        switchBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const track = btn.dataset.track;
+                switchBtns.forEach(b => {
+                    const on = b === btn;
+                    b.classList.toggle('on', on);
+                    b.setAttribute('aria-selected', on ? 'true' : 'false');
+                });
+                panes.forEach(p => p.classList.toggle('on', p.dataset.pane === track));
+                document.body.setAttribute('data-active', track);
+            });
+        });
+
+        // reveal on scroll
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('in');
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    </script>
+</body>
+
+</html>
