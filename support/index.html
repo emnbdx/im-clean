@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support — I'm clean</title>
+    <meta name="description" content="Contact I'm clean support by email.">
+    <meta name="theme-color" content="#F2F5F3">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Support — I'm clean">
+    <meta property="og:description" content="Contact I'm clean support by email.">
+    <meta property="og:locale" content="en_US">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" href="../logo.jpeg" type="image/jpeg">
+    <link rel="stylesheet" href="../site.css">
+</head>
+
+<body data-page="support">
+    <header class="nav" id="nav">
+        <div class="wrap nav-inner">
+            <a href="../" class="brand">
+                <span class="mark"><img src="../logo.jpeg" alt="" width="40" height="40"></span>
+                I'm clean
+            </a>
+            <nav class="nav-links" id="navLinks">
+                <a class="link" href="../" data-i18n="nav.home">Home</a>
+                <a class="link on" href="./" data-i18n="nav.support">Support</a>
+                <a class="link" href="../privacy/" data-i18n="nav.privacyPolicy">Privacy</a>
+                <a class="btn btn-primary" href="../#telecharger" data-i18n="nav.download">Download</a>
+            </nav>
+            <div class="nav-actions">
+                <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.lang" aria-label="Language">
+                    <button type="button" data-lang="en" class="on" aria-pressed="true">EN</button>
+                    <button type="button" data-lang="fr" aria-pressed="false">FR</button>
+                    <button type="button" data-lang="es" aria-pressed="false">ES</button>
+                </div>
+                <button class="nav-toggle" id="navToggle" data-i18n-attr="aria-label:nav.menu" aria-label="Menu"
+                    aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="wrap">
+                <span class="eyebrow" data-i18n="support.eyebrow">Support</span>
+                <h1 data-i18n="support.h1">We're here to help</h1>
+                <p class="lede" data-i18n="support.lede">Send us a message and we'll get back to you by email. No account required.</p>
+            </div>
+        </section>
+
+        <section>
+            <div class="wrap" style="max-width:760px;margin:0 auto;padding-bottom:64px">
+                <div class="page-panel">
+                    <form id="supportForm" class="form-grid" novalidate>
+                        <div class="form-row" style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden" aria-hidden="true">
+                            <label for="website">Website</label>
+                            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+                        </div>
+                        <div class="form-row two">
+                            <div class="form-row">
+                                <label for="name" data-i18n="support.name">Name</label>
+                                <input id="name" name="name" type="text" autocomplete="name">
+                            </div>
+                            <div class="form-row">
+                                <label for="email" data-i18n="support.email">Your email</label>
+                                <input id="email" name="email" type="email" autocomplete="email" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label for="subject" data-i18n="support.subject">Subject</label>
+                            <select id="subject" name="subject">
+                                <option value="general" data-i18n="support.subjectGeneral">General question</option>
+                                <option value="bug" data-i18n="support.subjectBug">Bug report</option>
+                                <option value="feedback" data-i18n="support.subjectFeedback">Feedback</option>
+                                <option value="privacy" data-i18n="support.subjectPrivacy">Privacy</option>
+                                <option value="other" data-i18n="support.subjectOther">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <label for="message" data-i18n="support.message">Message</label>
+                            <textarea id="message" name="message" required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="submitBtn" data-i18n="support.send">Send message</button>
+                            <p class="form-hint" data-i18n="support.hint">Your message is sent securely to our support inbox.</p>
+                        </div>
+                        <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <a href="../" class="brand">
+                        <span class="mark"><img src="../logo.jpeg" alt="" width="40" height="40"></span>
+                        I'm clean
+                    </a>
+                    <p data-i18n="footer.tagline">A calm, private quit companion for alcohol and tobacco.</p>
+                </div>
+                <div class="footer-cols">
+                    <div class="footer-col">
+                        <h4 data-i18n="footer.app">App</h4>
+                        <a href="../" data-i18n="nav.home">Home</a>
+                        <a href="../#telecharger" data-i18n="footer.download">Download</a>
+                    </div>
+                    <div class="footer-col">
+                        <h4 data-i18n="footer.trust">Trust</h4>
+                        <a href="../privacy/" data-i18n="nav.privacyPolicy">Privacy</a>
+                        <a href="./" data-i18n="nav.support">Support</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span data-i18n="footer.copy">© 2026 I'm clean. All rights reserved.</span>
+                <span data-i18n="footer.made">Made with calm</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../i18n.js"></script>
+    <script>
+        const nav = document.getElementById('nav');
+        const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        const toggle = document.getElementById('navToggle');
+        const links = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => {
+            const open = links.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        links.querySelectorAll('a').forEach(a =>
+            a.addEventListener('click', () => {
+                links.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+            })
+        );
+
+        const form = document.getElementById('supportForm');
+        const statusEl = document.getElementById('formStatus');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function t(key) {
+            const dict = window.IMCLEAN_I18N[document.documentElement.lang] || window.IMCLEAN_I18N.en;
+            return key.split('.').reduce((o, k) => (o == null ? o : o[k]), dict) || '';
+        }
+
+        function showStatus(kind, message) {
+            statusEl.className = 'form-status show ' + kind;
+            statusEl.textContent = message;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const from = document.getElementById('email').value.trim();
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value.trim();
+            const website = document.getElementById('website').value.trim();
+            if (!from || !message) return;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = t('support.sending') || 'Sending…';
+            statusEl.className = 'form-status';
+
+            try {
+                const res = await fetch('./send.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        email: from,
+                        subject,
+                        message,
+                        website,
+                        lang: document.documentElement.lang || 'en',
+                    }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok || !data.ok) {
+                    if (res.status === 429 || data.error === 'rate_limited') {
+                        showStatus('err', t('support.errorRate'));
+                    } else {
+                        showStatus('err', t('support.error'));
+                    }
+                    return;
+                }
+                form.reset();
+                showStatus('ok', t('support.success'));
+            } catch (_) {
+                showStatus('err', t('support.error'));
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = t('support.send') || 'Send message';
+            }
+        });
+    </script>
+</body>
+
+</html>
