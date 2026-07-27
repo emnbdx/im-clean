@@ -5,10 +5,8 @@ de sevrage calme et privé pour l'arrêt de **l'alcool** et du **tabac**.
 
 ## Le concept
 
-On ne coche pas chaque jour. L'utilisateur définit une date de début par
-habitude, puis chaque jour est « réussi » par défaut (sans alcool / sans
-cigarette). On ne note que les jours d'écart. Le quotidien ne demande donc
-aucune action tant que tout va bien.
+Chaque jour, vous notez si vous êtes clean ou s'il y a eu un écart. L'app
+envoie une notif pour y penser. Sans compte, hors-ligne, sans jugement.
 
 ## Le site
 
