@@ -12,9 +12,9 @@ envoie une notif pour y penser. Sans compte, hors-ligne, sans jugement.
 
 - Pages :
   - `/` — vitrine (`index.html`)
-  - `/support/` — formulaire contact (PHP → Brevo)
+  - `/support/` — formulaire contact (PHP → Postal)
   - `/privacy/` — politique de confidentialité
-- `i18n.js`, `site.css`, `config.php` (secrets Brevo, gitignored).
+- `i18n.js`, `site.css`, `config.php` (accès API Postal, gitignored).
 - Logo : `logo.jpeg`.
 - Polices via Google Fonts (Bricolage Grotesque + Inter).
 - Localisation EN / FR / ES : langue système d'abord, fallback EN si non supportée ; sélecteur dans la nav, choix mémorisé.
@@ -26,12 +26,14 @@ Hero · Concept · Trackers (alcool / tabac) · Fonctionnalités · Mon corps
 (timeline santé sourcée, OMS pour le tabac) · Statistiques · Confidentialité ·
 FAQ · Téléchargement.
 
-### Support / Brevo
+### Support / Postal
 
 1. Copier `config.example.php` → `config.php`
-2. Renseigner la clé API Brevo et les e-mails expéditeur / destinataire
-   (l'expéditeur doit être vérifié dans Brevo)
-3. Servir le site avec PHP (`php -S` ou Apache/Nginx + PHP)
+2. Renseigner l’URL de l’instance Postal, la clé API serveur
+   (Postal → Servers → API → Credentials) et les e-mails expéditeur / destinataire
+   (le domaine expéditeur doit être autorisé sur le serveur Postal)
+3. Installer le client Postal : `composer install`
+4. Servir le site avec PHP (`php -S` ou Apache/Nginx + PHP)
 
 ## Développement local
 
@@ -46,6 +48,7 @@ Avec envoi support (PHP) :
 ```bash
 cp config.example.php config.php
 # éditer config.php
+composer install
 php -S localhost:8000
 # puis http://localhost:8000/support/
 ```
