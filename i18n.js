@@ -187,10 +187,11 @@ window.IMCLEAN_I18N = {
     },
     cta: {
       h2: "Commencez aujourd'hui. Un jour à la fois.",
-      p: "I'm clean arrive bientôt sur l'App Store et Google Play. Notez votre journée, ça fait du bien.",
+      p: "I'm clean est disponible sur l'App Store. Google Play arrive bientôt. Notez votre journée, ça fait du bien.",
       soon: "Bientôt sur",
-      note: "Disponible prochainement sur iOS et Android.",
-      ariaApple: "Bientôt sur l'App Store",
+      onStore: "Télécharger sur",
+      note: "Disponible sur iOS. Android arrive bientôt.",
+      ariaApple: "Télécharger sur l'App Store",
       ariaGoogle: "Bientôt sur Google Play",
     },
 
@@ -469,10 +470,11 @@ window.IMCLEAN_I18N = {
     },
     cta: {
       h2: "Start today. One day at a time.",
-      p: "I'm clean is coming soon to the App Store and Google Play. Log your day, it feels good.",
+      p: "I'm clean is available on the App Store. Google Play is coming soon. Log your day, it feels good.",
       soon: "Coming soon to",
-      note: "Coming soon on iOS and Android.",
-      ariaApple: "Coming soon to the App Store",
+      onStore: "Download on",
+      note: "Available on iOS. Android is coming soon.",
+      ariaApple: "Download on the App Store",
       ariaGoogle: "Coming soon to Google Play",
     },
 
@@ -751,10 +753,11 @@ window.IMCLEAN_I18N = {
     },
     cta: {
       h2: "Empieza hoy. Un día a la vez.",
-      p: "I'm clean llega pronto a la App Store y Google Play. Anota tu día, te sienta bien.",
+      p: "I'm clean ya está en la App Store. Google Play llega pronto. Anota tu día, te sienta bien.",
       soon: "Próximamente en",
-      note: "Disponible próximamente en iOS y Android.",
-      ariaApple: "Próximamente en la App Store",
+      onStore: "Descargar en",
+      note: "Disponible en iOS. Android llega pronto.",
+      ariaApple: "Descargar en la App Store",
       ariaGoogle: "Próximamente en Google Play",
     },
 
